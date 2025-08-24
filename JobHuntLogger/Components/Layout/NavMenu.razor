@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using JobHuntLogger.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@inject UserSession userSession
+
+@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">JobHuntLogger</a>
     </div>
@@ -15,16 +19,84 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
+            <NavLink class="nav-link" href="login">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+   
     </nav>
 </div>
+ *@
+ 
+<div class="top-row navbar navbar-dark">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="">JobHuntLogger</a>
+		<button title="Navigation menu" @onclick="ToggleNavMenu">
+			<span class="navbar-toggler-icon"> </span>
+		</button>
+	</div>
+</div>
 
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+	<nav class="flex-column">
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+				<span class="oi oi-home" aria-hidden="true">Home</span>
+			</NavLink>
+		</div>
+		
+		<AuthorizeView>
+			<Authorized>
+				<div class="nav-item px-3">
+					<NavLink ActiveClass="tbd">
+						<span>Applications</span>
+					</NavLink>
+
+				</div>
+			</Authorized>
+			<NotAuthorized>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="login">
+						<span class="oi oi-plus" aria-hidden="true"></span> Login
+					</NavLink>
+				</div>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="createUser">
+						<span class="oi oi-plus" aria-hidden="true"></span> CreateAccount
+					</NavLink>
+				</div>
+			</NotAuthorized>
+		</AuthorizeView>
+
+	</nav>
+</div>
+
+
+
+
+@code {
+	private bool collapseNavMenu = true;
+
+	private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+	private void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+	}
+
+	protected override void OnInitialized()
+	{
+		userSession.OnChange += OnMyChangeHandler;
+	}
+
+	public void Dispose()
+	{
+		userSession.OnChange -= OnMyChangeHandler;
+	}
+
+	private async void OnMyChangeHandler()
+	{
+		await InvokeAsync(() => StateHasChanged());
+	}
+}

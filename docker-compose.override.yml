@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  jobhuntlogger:
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+    volumes:
+      - /c/Users/danie/AppData/Roaming/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - /c/Users/danie/AppData/Roaming/ASP.NET/Https:/root/.aspnet/https:ro
+
+  jobhuntapi:
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+    volumes:
+      - /c/Users/danie/AppData/Roaming/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - /c/Users/danie/AppData/Roaming/ASP.NET/Https:/root/.aspnet/https:ro

@@ -1,0 +1,20 @@
+services:
+  jobhuntlogger:
+    container_name:
+      blazorapp
+    build:
+      context: .
+      dockerfile: JobHuntLogger\Dockerfile
+    ports:
+     - "8000:8080"
+
+  jobhuntapi:
+    container_name:
+       jobhuntapi
+    build:
+      context: .
+      dockerfile: JobHuntAPI\Dockerfile
+    ports:
+      - "8160:8080"
+
+        

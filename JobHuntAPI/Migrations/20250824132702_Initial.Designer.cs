@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobHuntAPI.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20250821095303_initial")]
-    partial class initial
+    [Migration("20250824132702_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,35 +71,17 @@ namespace JobHuntAPI.Migrations
 
                     b.Property<string>("HashedPassword")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("JobHuntAPI.Model.UserSalt", b =>
-                {
-                    b.Property<Guid>("UserSaltId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("UserSaltId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserSalts");
                 });
 
             modelBuilder.Entity("JobHuntAPI.Model.JobApplication", b =>
@@ -109,17 +91,6 @@ namespace JobHuntAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("JobHuntAPI.Model.UserSalt", b =>
-                {
-                    b.HasOne("JobHuntAPI.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobHuntAPI.Model.User", b =>

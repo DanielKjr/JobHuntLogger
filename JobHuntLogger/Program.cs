@@ -1,10 +1,20 @@
+using JobHuntLogger;
+using JobHuntLogger.Authentication;
 using JobHuntLogger.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
+builder.Services.AddAuthenticationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<UserSession>();
+
+builder.Services.AddScoped<AuthenticationServiceClient>();
+builder.Services.AddScoped<HttpClient>();
+
 
 var app = builder.Build();
 
@@ -17,10 +27,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode();
 
