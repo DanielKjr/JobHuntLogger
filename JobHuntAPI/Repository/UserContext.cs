@@ -9,7 +9,7 @@ namespace JobHuntAPI.Repository
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseNpgsql(configuration["ConnectionStrings:Postgres"]);
+			optionsBuilder.UseNpgsql(configuration.GetConnectionString("Postgres"));
 		}
 	}
 }

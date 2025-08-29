@@ -14,7 +14,27 @@ services:
     build:
       context: .
       dockerfile: JobHuntAPI\Dockerfile
-    ports:
-      - "8160:8080"
+    # logins and creation is redirection by authorizationserver, so no ports exposed
+    # ports:
+    #   - "8160:8080"
+    secrets:
+     - dbinfo
 
         
+  authorizationserver:
+     container_name:
+      authorizationserver
+     build:
+       context: .
+       dockerfile: AuthorizationServer\Dockerfile
+     volumes:
+       - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
+     ports:
+       - "8180:8080"
+     secrets:
+       - dbinfo
+
+
+secrets:
+   dbinfo:
+      file: ./docker/secrets/dbinfo.json

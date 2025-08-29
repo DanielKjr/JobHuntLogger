@@ -6,8 +6,23 @@ using Microsoft.AspNetCore.Identity;
 
 namespace JobHuntAPI.Services
 {
-	public class AuthenticationService(IAsyncRepository<UserContext> userRepository)
+	public class LoginService(IAsyncRepository<UserContext> userRepository)
 	{
+		
+		public async Task<bool> Login(UserDto userDto)
+		{
+			User user = await userRepository.GetItem<User>(q =>
+				q.Where(i => i.UserName == userDto.UserName));
+
+			if (user == null)
+				return false; // username not found
+
+			PasswordHasher<User> hasher = new PasswordHasher<User>();
+			var result = hasher.VerifyHashedPassword(user, user.HashedPassword, userDto.Password);
+
+			return result == PasswordVerificationResult.Success;
+		}
+
 		public async Task<User> CreateUser(UserDto userDto)
 		{
 			User existingUser = await userRepository.GetItem<User>(q => q.Where(i => i.UserName == userDto.UserName));
@@ -26,21 +41,6 @@ namespace JobHuntAPI.Services
 			await userRepository.AddItem(newUser);
 			return newUser;
 		}
-
-		public async Task<bool> Login(UserDto userDto)
-		{
-			User user = await userRepository.GetItem<User>(q =>
-				q.Where(i => i.UserName == userDto.UserName));
-
-			if (user == null)
-				return false; // username not found
-
-			PasswordHasher<User> hasher = new PasswordHasher<User>();
-			var result = hasher.VerifyHashedPassword(user, user.HashedPassword, userDto.Password);
-
-			return result == PasswordVerificationResult.Success;
-		}
-
-
 	}
 }
+

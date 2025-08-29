@@ -362,3 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /JobHuntAPI/.env
+
+./JobHuntApi/docker
+./JobHuntApi/docker/secrets
+./JobHuntApi/docker/secrets/dbinfo.json
+/docker/secrets/dbinfo.json
