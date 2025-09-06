@@ -3,6 +3,7 @@ The premise of this application is simple, after applying to a job you can add t
 
 This could easily be solved by a Back- and front-end solution with SQLite, however I wish to challenge myself and to reach more subjects, frameworks and methods for the experience. 
 
+It has proven difficult to get blazor communicating with other services, after a week of no progress and no documentation available on related issues, I compeltely reset the blazor app.
 
 Currently containing:
 - [x] Docker-compose orchestration with secrets for important parts.
@@ -10,6 +11,7 @@ Currently containing:
 - [x] OpenIDConnect & OAuth2 with OpenIddict in AuthorizationServer.
 - [x] Login/user creation with encryption, routed through the Authorization server, so that the Login functionality remains un-exposed.\
       (Tested through Postman)
+
 - [ ] Blazor front-end:
 - [ ] User creation/Login
 - [ ] Upload PDF files to server
