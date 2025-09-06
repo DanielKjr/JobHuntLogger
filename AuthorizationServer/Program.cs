@@ -1,6 +1,7 @@
 using AuthorizationServer;
 using AuthorizationServer.Contexts;
 using AuthorizationServer.Workers;
+using OpenIddict.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,13 @@ builder.Services.AddOpenIddict()
 		//either this or dealing with SSL certificates.
 		options.UseAspNetCore().EnableAuthorizationEndpointPassthrough().DisableTransportSecurityRequirement();
 
+		options.AllowPasswordFlow();
+		options.RegisterScopes(
+			OpenIddictConstants.Scopes.OpenId,
+			OpenIddictConstants.Scopes.Profile
+		);
+
+
 	})
 	.AddValidation(options =>
 	{
@@ -52,6 +60,7 @@ builder.Services.AddOpenIddict()
 	});
 
 builder.Services.AddHostedService<ApiWorker>();
+builder.Services.AddHostedService<BlazorWorker>();
 
 
 
@@ -74,10 +83,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 // openiddict needs a callback method to validate the requests. This returns the code used in fetching token
-app.MapGet("/signin-oidc", (HttpContext ctx) =>
-{
-	var code = ctx.Request.Query["code"];
-	return Results.Text(code);
-});
+//app.MapGet("/signin-oidc", (HttpContext ctx) =>
+//{
+//	var code = ctx.Request.Query["code"];
+//	return Results.Text(code);
+//});
 
 app.Run();

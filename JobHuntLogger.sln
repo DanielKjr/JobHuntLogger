@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntLogger", "JobHuntLogger\JobHuntLogger.csproj", "{F45E7299-310F-4FB1-BE3B-F0AB718639D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntAPI", "JobHuntAPI\JobHuntAPI.csproj", "{F922F4FF-0417-472F-A856-90F0C7C4254B}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizationServer", "AuthorizationServer\AuthorizationServer.csproj", "{45065976-A347-4DF5-97B0-3DB60EEE0A0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHuntLogger", "JobHuntLogger\JobHuntLogger.csproj", "{D462BE94-3368-4849-BA69-8072C2809E23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F45E7299-310F-4FB1-BE3B-F0AB718639D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F45E7299-310F-4FB1-BE3B-F0AB718639D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F45E7299-310F-4FB1-BE3B-F0AB718639D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F45E7299-310F-4FB1-BE3B-F0AB718639D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F922F4FF-0417-472F-A856-90F0C7C4254B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F922F4FF-0417-472F-A856-90F0C7C4254B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F922F4FF-0417-472F-A856-90F0C7C4254B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{45065976-A347-4DF5-97B0-3DB60EEE0A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45065976-A347-4DF5-97B0-3DB60EEE0A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45065976-A347-4DF5-97B0-3DB60EEE0A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D462BE94-3368-4849-BA69-8072C2809E23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D462BE94-3368-4849-BA69-8072C2809E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D462BE94-3368-4849-BA69-8072C2809E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D462BE94-3368-4849-BA69-8072C2809E23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

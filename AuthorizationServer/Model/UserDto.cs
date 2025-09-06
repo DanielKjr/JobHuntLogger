@@ -1,4 +1,4 @@
-﻿namespace JobHuntLogger.Model.Dto
+﻿namespace AuthorizationServer.Model
 {
 	public class UserDto
 	{

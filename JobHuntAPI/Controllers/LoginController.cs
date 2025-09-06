@@ -1,6 +1,5 @@
 ﻿using JobHuntAPI.Model.Dto;
 using JobHuntAPI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobHuntAPI.Controllers
@@ -12,7 +11,7 @@ namespace JobHuntAPI.Controllers
 	[Route("authenticate")]
 	public class LoginController(LoginService loginService) : ControllerBase
 	{
-	
+
 
 
 		[HttpPost("login")]
@@ -36,7 +35,7 @@ namespace JobHuntAPI.Controllers
 			try
 			{
 				var newUser = await loginService.CreateUser(user);
-				return CreatedAtAction(nameof(CreateUser),null , true);
+				return CreatedAtAction(nameof(CreateUser), null, true);
 			}
 			catch (InvalidOperationException ex)
 			{

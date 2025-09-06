@@ -5,8 +5,15 @@ services:
     build:
       context: .
       dockerfile: JobHuntLogger\Dockerfile
+      # target: dev
+    volumes:
+       # - ./JobHuntLogger:/src/JobHuntLogger
+       - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
     ports:
      - "8000:8080"
+    secrets:
+     - dbinfo
+     
 
   jobhuntapi:
     container_name:

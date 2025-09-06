@@ -1,40 +1,18 @@
-﻿@using JobHuntLogger.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="JobHuntLogger.styles.css" />
-    <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
-</head> 
-
-
+</head>
 
 <body>
-@*    <Routes />
-    <script src="_framework/blazor.web.js"></script> *@
-	﻿
-	<CascadingAuthenticationState>
-		<Router AppAssembly="@typeof(App).Assembly">
-			<Found Context="routeData">
-				<AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-				<FocusOnNavigate RouteData="@routeData" Selector="h1" />
-			</Found>
-			<NotFound>
-				<PageTitle>Not found</PageTitle>
-				<LayoutView Layout="@typeof(MainLayout)">
-					<p role="alert">Sorry, there's nothing at this address.</p>
-				</LayoutView>
-			</NotFound>
-		</Router>
-	</CascadingAuthenticationState>
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
 </body>
- 
+
 </html>
- 

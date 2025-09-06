@@ -8,7 +8,7 @@ namespace JobHuntAPI.Services
 {
 	public class LoginService(IAsyncRepository<UserContext> userRepository)
 	{
-		
+
 		public async Task<bool> Login(UserDto userDto)
 		{
 			User user = await userRepository.GetItem<User>(q =>

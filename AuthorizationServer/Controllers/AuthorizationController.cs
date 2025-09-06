@@ -86,7 +86,7 @@ public class AuthorizationController(LoginClient authenticationClient) : Control
 			}
 			catch
 			{
-				
+
 				return BadRequest(errorMessage);
 			}
 

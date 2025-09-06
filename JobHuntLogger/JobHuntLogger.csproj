@@ -4,43 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>0f14116d-8c72-47ef-98b9-f7634e1117d5</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-      
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Components\NewFolder1\**" />
-    <Content Remove="Components\NewFolder1\**" />
-    <EmbeddedResource Remove="Components\NewFolder1\**" />
-    <None Remove="Components\NewFolder1\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="authenticationservice.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <OpenApiReference Include="AuthenticationService.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\Utility\" />
-  </ItemGroup>
 
 </Project>

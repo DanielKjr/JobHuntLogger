@@ -20,6 +20,7 @@ namespace AuthorizationServer.Controllers
 		public async Task<IActionResult> Exchange()
 		{
 			var request = HttpContext.GetOpenIddictServerRequest();
+
 			if (request.IsClientCredentialsGrantType())
 			{
 
