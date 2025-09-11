@@ -1,9 +1,47 @@
-﻿@inherits LayoutComponentBase
+﻿@using JobHuntLogger.Components.Model.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits LayoutComponentBase
+<div class="page">
+	<div class="sidebar">
+		<NavMenu />
+	</div>
 
+	<main>
+		<div class="top-row px-4">
+			<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+
+			<AuthorizeView>
+				<Authorized>
+					<a @onclick="LogOut" href="javascript:void(0)">Logout</a>
+				</Authorized>
+				<NotAuthorized>
+					<a href="/login">Login</a>
+				</NotAuthorized>
+			</AuthorizeView>
+		</div>
+
+		<article class="content px-4">
+			@Body
+		</article>
+	</main>
+</div>
+
+@code {
+	private async Task LogOut()
+	{
+		var customAuthenticationProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+		await customAuthenticationProvider.UpdateAuthenticationState(null);
+		NavigationManager.NavigateTo("/", true);
+	}
+}
+@* 
 @Body
 
-<div id="blazor-error-ui">
+<div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
 </div>
+ *@

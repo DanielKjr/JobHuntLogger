@@ -21,9 +21,8 @@ services:
     build:
       context: .
       dockerfile: JobHuntAPI\Dockerfile
-    # logins and creation is redirection by authorizationserver, so no ports exposed
-    # ports:
-    #   - "8160:8080"
+    ports:
+       - "8160:8080"
     secrets:
      - dbinfo
 
