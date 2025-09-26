@@ -1,5 +1,6 @@
 ﻿using JobHuntAPI.Model.Dto;
 using JobHuntAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobHuntAPI.Controllers
@@ -8,6 +9,8 @@ namespace JobHuntAPI.Controllers
 	/// Controller called by the AuthorizationServer, passing on credentials
 	/// </summary>
 	/// <param name="loginService"></param>
+	[Authorize]
+	[ApiController]
 	[Route("authenticate")]
 	public class LoginController(LoginService loginService) : ControllerBase
 	{
@@ -41,6 +44,13 @@ namespace JobHuntAPI.Controllers
 			{
 				return BadRequest(new { error = ex.Message });
 			}
+		}
+
+
+		[HttpGet("temp")]
+		public string Temp()
+		{
+			return "accessed";
 		}
 
 	}

@@ -1,7 +1,7 @@
-﻿@using JobHuntLogger.Components.Model.Authentication
-@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
+
 @inherits LayoutComponentBase
 <div class="page">
 	<div class="sidebar">
@@ -10,11 +10,15 @@
 
 	<main>
 		<div class="top-row px-4">
-			<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+			@* <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
 
 			<AuthorizeView>
 				<Authorized>
-					<a @onclick="LogOut" href="javascript:void(0)">Logout</a>
+					<button @onclick="@(() => NavigationManager.NavigateTo("MicrosoftIdentity/Account/SignOut", true))">
+						Logout
+					</button>
+
+
 				</Authorized>
 				<NotAuthorized>
 					<a href="/login">Login</a>
@@ -29,12 +33,7 @@
 </div>
 
 @code {
-	private async Task LogOut()
-	{
-		var customAuthenticationProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-		await customAuthenticationProvider.UpdateAuthenticationState(null);
-		NavigationManager.NavigateTo("/", true);
-	}
+
 }
 @* 
 @Body

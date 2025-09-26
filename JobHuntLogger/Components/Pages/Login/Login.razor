@@ -1,88 +1,23 @@
 ﻿@page "/login"
+
 @using JobHuntLogger.Components.Model.Authentication
-@using JobHuntLogger.Components.Model.DTO
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Components.Authorization
-@inject IJSRuntime Js
-@inject UserSession UserSession
-@inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Authorization
+@rendermode InteractiveServer
+@inject JobHuntApiService JobHuntApiService
 
-
-
+@attribute [Authorize]
 <h3>Login</h3>
 
-<EditForm Model="userDto" OnSubmit="Authenticate" autocomplete="off">
-
-	<DataAnnotationsValidator></DataAnnotationsValidator>
-	<ValidationSummary></ValidationSummary>
+<button type="button" @onclick="Authenticate">Login</button>
 
 
-	<div class="form-group">
-		<label for="name">Name</label>
-		<InputText id="name"
-		           @bind-Value=userDto.UserName
-		           class="form-control">
-		</InputText>
-	</div>
-
-	<div class="form-group">
-		<label for="cost">Password</label>
-		<InputText type="password"
-		           placeholder="Password"
-		           id="password"
-		           @bind-Value=userInput
-		           class="form-control"
-		           autocomplete="off">
-		</InputText>
-	</div>
-
-
-	<br />
-	<br />
-	<button type="submit"
-	        class="btn btn-primary">
-		Login
-	</button>
-
-
-
-
-</EditForm> 
 
 @code {
-	private UserDto userDto = new UserDto();
-	private string userInput = string.Empty;
-
 
 	private async Task Authenticate()
 	{
-		try
-		{
-			//assume its redundant, but to ensure that the name isn't changed after hitting authenticate
-			var temp = new UserDto() { UserName = userDto.UserName, Password = userDto.Password };
-			// var loginSuccess = await AuthenticationService.LoginAsync(userDto);
-           
-			// if (!loginSuccess)
-			// {
-			// 	await Js.InvokeVoidAsync("alert", "Invalid userDto name or password.");
-			// 	return;
-			// }
-
-			var customAuthenticationStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-			await customAuthenticationStateProvider.UpdateAuthenticationState(new UserSession
-			{
-				UserName = temp.UserName
-			});
-			UserSession.IsLoggedin = true;
-			
-			NavigationManager.NavigateTo("/", true);
-		}
-		catch (Exception)
-		{
-			await Js.InvokeVoidAsync("alert", "Login information incorrect. ");
-		}
-
-
+			var response = await JobHuntApiService.CallApi();
+			var content = await response.Content.ReadAsStringAsync();
+			Console.WriteLine(response.Content);
 	}
 }

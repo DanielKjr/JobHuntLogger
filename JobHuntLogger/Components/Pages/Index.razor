@@ -1,5 +1,7 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@attribute [AllowAnonymous]
 @page "/"
 
 <PageTitle>Index</PageTitle>
@@ -7,9 +9,13 @@
 
 <AuthorizeView>
 	<Authorized>
-		<h1>Welcome @context?.User.Identity!</h1>
+		<h1>Welcome @context?.User?.Identity?.Name?.Split("@")[0]</h1>
 	</Authorized>
 	<NotAuthorized>
+		<button @onclick="LoginWithMicrosoft">Login with Microsoft</button>
+		<button @onclick="LoginWithWindows">Login with Windows</button>
+
+	
 		<h1>Welcome guest</h1>
 	</NotAuthorized>
 </AuthorizeView>
@@ -18,4 +24,14 @@
 
 	[CascadingParameter]
 	private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+		private void LoginWithMicrosoft()
+		{
+			NavigationManager.NavigateTo("MicrosoftLoginUrl", true);
+		}
+		private void LoginWithWindows()
+		{
+			NavigationManager.NavigateTo("WindowsLoginUrl", true);
+		}
+	
 }

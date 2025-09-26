@@ -27,18 +27,18 @@ services:
      - dbinfo
 
         
-  authorizationserver:
-     container_name:
-      authorizationserver
-     build:
-       context: .
-       dockerfile: AuthorizationServer\Dockerfile
-     volumes:
-       - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
-     ports:
-       - "8180:8080"
-     secrets:
-       - dbinfo
+  # authorizationserver:
+  #    container_name:
+  #     authorizationserver
+  #    build:
+  #      context: .
+  #      dockerfile: AuthorizationServer\Dockerfile
+  #    volumes:
+  #      - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
+  #    ports:
+  #      - "8180:8080"
+  #    secrets:
+  #      - dbinfo
 
 
 secrets:

@@ -4,34 +4,37 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["JobHuntLogger.styles.css"]" />
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <ImportMap />
-    <HeadOutlet />
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<base href="/"/>
+	<link rel="stylesheet" href="@Assets["app.css"]"/>
+	<link rel="stylesheet" href="@Assets["JobHuntLogger.styles.css"]"/>
+	<link rel="icon" type="image/png" href="favicon.png"/>
+	<ImportMap/>
+	<HeadOutlet/>
 </head>
 
 <body>
-   @*  <Routes />
+@*  <Routes />
     <script src="_framework/blazor.web.js"></script>
 	 *@
-    <CascadingAuthenticationState>
-	    <Router AppAssembly="@typeof(App).Assembly">
-		    <Found Context="routeData">
-			    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-			    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-		    </Found>
-		    <NotFound>
-			    <PageTitle>Not found</PageTitle>
-			    <LayoutView Layout="@typeof(MainLayout)">
-				    <p role="alert">Sorry, there's nothing at this address.</p>
-			    </LayoutView>
-		    </NotFound>
-	    </Router>
-    </CascadingAuthenticationState>
-    </body>
+<script src="_framework/blazor.web.js"></script>
+<CascadingAuthenticationState>
+	<Router AppAssembly="@typeof(App).Assembly">
+
+		<Found Context="routeData">
+			<AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+			<FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+
+		</Found>
+		<NotFound>
+			<PageTitle>Not found</PageTitle>
+			<LayoutView Layout="@typeof(MainLayout)">
+				<p role="alert">Sorry, there's nothing at this address.</p>
+			</LayoutView>
+		</NotFound>
+	</Router>
+</CascadingAuthenticationState>
+</body>
 
 </html>
