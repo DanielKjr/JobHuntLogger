@@ -1,7 +1,7 @@
 ﻿using Microsoft.Identity.Web;
 using System.Net.Http.Headers;
 
-namespace JobHuntLogger.Components.Model.Authentication
+namespace JobHuntLogger.Services
 {
 	public class JobHuntApiService(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory, IConfiguration configuration)
 	{

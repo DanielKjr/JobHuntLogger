@@ -367,3 +367,6 @@ FodyWeavers.xsd
 ./JobHuntApi/docker/secrets
 ./JobHuntApi/docker/secrets/dbinfo.json
 /docker/secrets/dbinfo.json
+/Temp
+JobHuntLogger/Properties/serviceDependencies.json
+JobHuntLogger/Properties/serviceDependencies.local.json

@@ -16,7 +16,7 @@ builder.Services.AddTransientAsyncRepository<UserContext>();
 builder.Services.AddDbContextFactory<UserContext>();
 
 builder.Configuration
-	.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: false);
+	.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 builder.Services.AddTransient<LoginService>();
 
 builder.Services.AddAuthentication("Bearer")

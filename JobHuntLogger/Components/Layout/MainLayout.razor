@@ -1,46 +1,28 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@inject NavigationManager NavigationManager
-@inject IHttpContextAccessor HttpContextAccessor
-
+@using JobHuntLogger.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+
 <div class="page">
-	<div class="sidebar">
-		<NavMenu />
-	</div>
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-	<main>
-		<div class="top-row px-4">
-			@* <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
+    <main>
+        <div class="top-row px-4 auth">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
 
-			<AuthorizeView>
-				<Authorized>
-					<button @onclick="@(() => NavigationManager.NavigateTo("MicrosoftIdentity/Account/SignOut", true))">
-						Logout
-					</button>
-
-
-				</Authorized>
-				<NotAuthorized>
-					<a href="/login">Login</a>
-				</NotAuthorized>
-			</AuthorizeView>
-		</div>
-
-		<article class="content px-4">
-			@Body
-		</article>
-	</main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
 
-@code {
-
-}
-@* 
-@Body
-
-<div id="blazor-error-ui" data-nosnippet>
+<div id="blazor-error-ui">
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
 </div>
- *@

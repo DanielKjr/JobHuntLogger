@@ -8,7 +8,6 @@
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://{ServiceIPAddress}{ServicePort}</DockerServiceUrl>
     <DockerServiceName>jobhuntlogger</DockerServiceName>
-	  
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
@@ -21,5 +20,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+    <None Include="JobHuntLogger\_Imports.razor" />
   </ItemGroup>
 </Project>

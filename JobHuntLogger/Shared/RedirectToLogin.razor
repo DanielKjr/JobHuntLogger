@@ -1,0 +1,9 @@
+@inject NavigationManager Navigation
+
+@* created by the Microsoft Identity Platform integration, kept for now  *@
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+    }
+}
