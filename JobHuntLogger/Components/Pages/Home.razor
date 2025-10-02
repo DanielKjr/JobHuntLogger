@@ -1,25 +1,10 @@
 ﻿@page "/"
-﻿@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
+
+
 @inject NavigationManager NavigationManager
-
 <PageTitle>Home</PageTitle>
-
-<CascadingAuthenticationState>
-	<AuthorizeView>
-		<Authorized>
-			<h1>Welcome @context?.User?.Identity?.Name?.Split("@")[0]</h1>
-			<JobHuntLogger.Shared.LoginDisplay></JobHuntLogger.Shared.LoginDisplay>
-		</Authorized>
-		<NotAuthorized>
-			<JobHuntLogger.Shared.LoginDisplay></JobHuntLogger.Shared.LoginDisplay>
-		</NotAuthorized>
-	</AuthorizeView>
-</CascadingAuthenticationState>
+<LoginOrOut></LoginOrOut>
 
 
-@code{
-	[CascadingParameter]
-	private Task<AuthenticationState>? AuthenticationState { get; set; }
+		
 
-}

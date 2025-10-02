@@ -1,0 +1,60 @@
+@page "/profile"
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject NavigationManager Navigation
+@attribute [Authorize]
+@inject ILogger<UserProfile> Logger
+<h3>User Profile</h3>
+
+        @if (user == null)
+        {
+            <p><em>@siteMsg</em></p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <td> DisplayName </td>
+                    <td> @user.DisplayName </td>
+                </tr>
+                <tr>
+                    <td> UserPrincipalName </td>
+                    <td> @user.UserPrincipalName </td>
+                </tr>
+            </table>
+        }
+
+
+
+@code {
+    User? user;
+    string siteMsg = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+
+            user = await GraphServiceClient.Me.Request().GetAsync();
+
+        }
+        catch (Exception ex)
+        {
+            siteMsg = "Error loading user... redirecting to login...";
+            StateHasChanged();
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/Account/Login", forceLoad: true);
+
+        }
+        
+   }
+
+
+}

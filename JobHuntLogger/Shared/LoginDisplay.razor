@@ -1,11 +1,10 @@
-@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Web
-
+@page "/login"
 
 @inject NavigationManager Navigation
 
-<CascadingAuthenticationState>
-    <AuthorizeView>
+
+  @*   <AuthorizeView>
         <Authorized>
             Hello, @context.User.Identity?.Name!
          
@@ -16,10 +15,11 @@
             <button @onclick="@(() => Navigation.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
         </NotAuthorized>
     </AuthorizeView>
-</CascadingAuthenticationState>
+ *@
 
 
 @code{
    
-
+    // [CascadingParameter]
+    // private Task<AuthenticationState>? authenticationStateTask { get; set; }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace JobHuntLogger.Shared
+﻿namespace JobHuntLogger.Shared
 {
 	using Microsoft.AspNetCore.Authentication;
 	using Microsoft.AspNetCore.Authentication.Cookies;

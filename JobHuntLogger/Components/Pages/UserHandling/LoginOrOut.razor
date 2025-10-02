@@ -1,0 +1,12 @@
+﻿@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+	<Authorized>
+		<button @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
+	</Authorized>
+	<NotAuthorized>
+		<button @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
+	</NotAuthorized>
+</AuthorizeView>
+
+

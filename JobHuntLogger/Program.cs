@@ -1,21 +1,20 @@
 using JobHuntLogger.Components;
 using JobHuntLogger.Services;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-using Microsoft.Graph;
 using Microsoft.Identity.Web;
 
-var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-	.AddInteractiveServerComponents();
+
+builder.Services.AddRazorComponents(options =>
+	options.DetailedErrors = builder.Environment.IsDevelopment()).AddInteractiveServerComponents();
+
 builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
-builder.Configuration
-.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
+//builder.Configuration
+//.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JobHuntApiService>();
@@ -24,12 +23,19 @@ builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 	.AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("Entra:Blazor"))
 	.EnableTokenAcquisitionToCallDownstreamApi(new[] { "User.Read" })
-	.AddMicrosoftGraph()     
+	.AddMicrosoftGraph()
 	.AddInMemoryTokenCaches();
+builder.Services.Configure<CookieAuthenticationOptions>(options =>
+{
+	options.Cookie.Name = "PersistentLogin";
 
+	options.ExpireTimeSpan = TimeSpan.FromDays(14); // Persistent for 14 days
+	options.SlidingExpiration = true;
+});
 
 
 builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 //builder.Services.AddAuthorizationBuilder()
 //	.SetFallbackPolicy(new AuthorizationPolicyBuilder()
@@ -51,6 +57,7 @@ app.MapControllers();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
