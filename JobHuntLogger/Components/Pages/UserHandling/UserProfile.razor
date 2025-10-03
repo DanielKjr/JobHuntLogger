@@ -1,9 +1,14 @@
 @page "/profile"
+@using JobHuntLogger.Services
 @using Microsoft.Graph
+@using Microsoft.Identity.Web
+@using System.Diagnostics
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject NavigationManager Navigation
 @attribute [Authorize]
 @inject ILogger<UserProfile> Logger
+@inject Microsoft.Identity.Web.ITokenAcquisition TokenAcquisition
+@inject JobHuntApiService JobHuntApiService
 <h3>User Profile</h3>
 
         @if (user == null)
@@ -27,23 +32,35 @@
                     <td> UserPrincipalName </td>
                     <td> @user.UserPrincipalName </td>
                 </tr>
+                <tr>
+                    <td> ID </td>
+                    <td> @user.Id</td>
+                </tr>
             </table>
+            <button @onclick="@(()=> Communicate())">Call api</button>
         }
 
 
-
+        
 @code {
+    //Component is used more or less just to confirm authentication and user informations
     User? user;
     string siteMsg = "Loading...";
+    private string? accessToken;
+
+
 
     protected override async Task OnInitializedAsync()
     {
-
         try
         {
+            var scopes = new[] { "User.Read" };
+            accessToken = await TokenAcquisition.GetAccessTokenForUserAsync(
+                scopes: scopes,
+                authenticationScheme: "OpenIdConnect"
+            );
 
             user = await GraphServiceClient.Me.Request().GetAsync();
-
         }
         catch (Exception ex)
         {
@@ -51,10 +68,12 @@
             StateHasChanged();
             await Task.Delay(2000);
             Navigation.NavigateTo("/Account/Login", forceLoad: true);
-
         }
-        
-   }
+    }
 
-
+    private async Task Communicate()
+    {
+        var s = await JobHuntApiService.CallApi();
+      
+    }
 }

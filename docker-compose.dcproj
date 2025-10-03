@@ -20,7 +20,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Include="JobHuntLogger\Components\Pages\LoginOrOut.razor" />
-    <None Include="JobHuntLogger\_Imports.razor" />
+
   </ItemGroup>
 </Project>

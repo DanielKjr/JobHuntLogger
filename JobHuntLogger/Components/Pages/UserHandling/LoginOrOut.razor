@@ -1,12 +1,33 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using System.Diagnostics
+@inject NavigationManager NavigationManager
 
-<AuthorizeView>
-	<Authorized>
-		<button @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
-	</Authorized>
-	<NotAuthorized>
-		<button @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
-	</NotAuthorized>
-</AuthorizeView>
+<div class="login-or-out-container">
+    <AuthorizeView>
+        <Authorized>
+            <div class="user-actions">
+                <div class="name">@userName</div>
+                <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="user-actions">
+                <div class="name">@userName</div>
+                <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
 
+@code{
+	[CascadingParameter]
+	private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
+	private string userName = "Guest";
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authenticationState = await AuthenticationStateTask;
+        if (authenticationState.User.Identity.IsAuthenticated)
+		    userName = authenticationState.User.Identities.FirstOrDefault()!.Claims.Where(i => i.Type == "name").FirstOrDefault()!.Value;
+	}
+}
