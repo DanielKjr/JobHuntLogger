@@ -370,3 +370,4 @@ FodyWeavers.xsd
 /Temp
 JobHuntLogger/Properties/serviceDependencies.json
 JobHuntLogger/Properties/serviceDependencies.local.json
+/docker/secrets

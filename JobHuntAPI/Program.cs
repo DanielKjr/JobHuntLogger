@@ -1,6 +1,7 @@
 using DK.GenericLibrary.ServiceCollection;
 using JobHuntAPI.Repository;
 using JobHuntAPI.Services;
+using JobHuntAPI.Services.Interfaces;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 
@@ -12,12 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransientAsyncRepository<UserContext>();
-builder.Services.AddDbContextFactory<UserContext>();
+builder.Services.AddScopedAsyncRepository<ApplicationContext>();
+builder.Services.AddDbContextFactory<ApplicationContext>();
+
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Configuration
 	.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
-builder.Services.AddTransient<LoginService>();
+
+builder.Configuration
+	.AddJsonFile("/run/secrets/api", optional: true, reloadOnChange: true);
+
 
 builder.Services.AddAuthentication("Bearer")
 	.AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("Entra:JobHuntApi"));

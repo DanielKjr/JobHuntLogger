@@ -1,16 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JobHuntAPI.Model.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobHuntAPI.Model
 {
 	[Table("Applications")]
-	public class JobApplication
+	public class JobApplication : IJobApplication
 	{
 
 		[Key]
 		public Guid JobApplicationId { get; set; }
 
-		[Required]
+		[ForeignKey("UserId")]
 		public Guid UserId { get; set; }
 
 		[Required]
@@ -23,10 +24,10 @@ namespace JobHuntAPI.Model
 
 		public DateTime ReplyDate { get; set; }
 
-		//should probably be encrypted
-		public string Base64Application { get; set; } = string.Empty;
+		
+		public byte[] EncryptedApplicationPdf { get; set; } = Array.Empty<byte>();
 
-		public string Base64Resume { get; set; } = string.Empty;
+		public byte[] EncryptedResumePdf { get; set; } = Array.Empty<byte>();
 
 		public JobApplication()
 		{

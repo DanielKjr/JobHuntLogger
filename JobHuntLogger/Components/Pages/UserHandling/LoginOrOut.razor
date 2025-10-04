@@ -1,5 +1,7 @@
 ﻿@using System.Diagnostics
+
 @inject NavigationManager NavigationManager
+@inject AuthenticationService AuthenticationService
 
 <div class="login-or-out-container">
     <AuthorizeView>
@@ -19,15 +21,12 @@
 </div>
 
 @code{
-	[CascadingParameter]
-	private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+	
 
 	private string userName = "Guest";
 
 	protected override async Task OnInitializedAsync()
 	{
-		var authenticationState = await AuthenticationStateTask;
-        if (authenticationState.User.Identity.IsAuthenticated)
-		    userName = authenticationState.User.Identities.FirstOrDefault()!.Claims.Where(i => i.Type == "name").FirstOrDefault()!.Value;
+		userName = await AuthenticationService.GetUserNameAsync();
 	}
 }

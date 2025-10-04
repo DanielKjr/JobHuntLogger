@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JobHuntAPI.Migrations
 {
-    [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationContext))]
+    partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -31,17 +31,17 @@ namespace JobHuntAPI.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Base64Application")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Base64Resume")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<byte[]>("EncryptedApplicationPdf")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("EncryptedResumePdf")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
@@ -55,44 +55,7 @@ namespace JobHuntAPI.Migrations
 
                     b.HasKey("JobApplicationId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Applications");
-                });
-
-            modelBuilder.Entity("JobHuntAPI.Model.User", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("HashedPassword")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("JobHuntAPI.Model.JobApplication", b =>
-                {
-                    b.HasOne("JobHuntAPI.Model.User", null)
-                        .WithMany("JobApplications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("JobHuntAPI.Model.User", b =>
-                {
-                    b.Navigation("JobApplications");
                 });
 #pragma warning restore 612, 618
         }

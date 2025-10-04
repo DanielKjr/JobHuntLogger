@@ -18,6 +18,7 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JobHuntApiService>();
+builder.Services.AddScoped<AuthenticationService>();
 
 builder.Services.AddHttpClient();
 var Configuration = builder.Configuration;
