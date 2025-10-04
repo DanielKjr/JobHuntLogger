@@ -1,6 +1,0 @@
-@JobHuntAuthorizationServer_HostAddress = http://localhost:5146
-
-GET {{JobHuntAuthorizationServer_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
