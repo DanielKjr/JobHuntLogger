@@ -19,10 +19,10 @@ builder.Services.AddDbContextFactory<ApplicationContext>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Configuration
-	.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
+	.AddJsonFile("/run/secrets/dbinfo", optional: false, reloadOnChange: true);
 
 builder.Configuration
-	.AddJsonFile("/run/secrets/api", optional: true, reloadOnChange: true);
+	.AddJsonFile("/run/secrets/apiinfo", optional: false, reloadOnChange: true);
 
 
 builder.Services.AddAuthentication("Bearer")

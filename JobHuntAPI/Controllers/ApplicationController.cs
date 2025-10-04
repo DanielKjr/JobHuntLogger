@@ -32,5 +32,10 @@ namespace JobHuntAPI.Controllers
 			}
 		}
 
+		[HttpGet("temp")]
+		public string Temp()
+		{
+			return "accessed";
+		}
 	}
 }

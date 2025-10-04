@@ -13,8 +13,8 @@ builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 //Adding the compose secrets json as a configuration source
-//builder.Configuration
-//.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
+builder.Configuration
+.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JobHuntApiService>();

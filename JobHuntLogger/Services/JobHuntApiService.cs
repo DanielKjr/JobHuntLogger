@@ -14,7 +14,7 @@ namespace JobHuntLogger.Services
 			var httpClient = httpClientFactory.CreateClient();
 			httpClient.BaseAddress = new Uri("http://jobhuntapi:8080/");
 			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-			return await httpClient.GetAsync("authenticate/temp");
+			return await httpClient.GetAsync("api/Application/temp");
 		}
 	}
 }
