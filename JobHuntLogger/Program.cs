@@ -1,5 +1,8 @@
+using JobHuntApi;
 using JobHuntLogger.Components;
 using JobHuntLogger.Services;
+using JobHuntLogger.Services.Authorization;
+using JobHuntLogger.Utilities;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.Identity.Web;
@@ -17,28 +20,13 @@ builder.Configuration
 .AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<JobHuntApiService>();
 builder.Services.AddScoped<AuthenticationService>();
-
 builder.Services.AddHttpClient();
-var Configuration = builder.Configuration;
+builder.Services.AddApiConfiguration();
+//builder.Services.AddHttpClient();
+var configuration = builder.Configuration;
 
-//Entra with SQL distributed token cache
-builder.Services.AddDistributedSqlServerCache(options =>
-{
-	options.ConnectionString = Configuration.GetConnectionString("TokenDb");
-	options.SchemaName = "Tokens";
-	options.TableName = "TokenCache";
-});
-builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-	.AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("Entra:Blazor"))
-	.EnableTokenAcquisitionToCallDownstreamApi(new[] { "User.Read" })
-	.AddMicrosoftGraph().
-	AddDistributedTokenCaches();
-
-
-builder.Services.AddAuthorization();
-builder.Services.AddCascadingAuthenticationState();
+builder.Services.ConfigureAuthenticationAndAuthorization(configuration);
 
 //Optional enforce authorize on all pages
 //builder.Services.AddAuthorizationBuilder()

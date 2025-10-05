@@ -70,7 +70,8 @@ else
 
 	private async Task Communicate()
 	{
-		var s = await JobHuntApiService.CallApi();
-
+		var s = await JobHuntApiService.CallApiClient();
 	}
+
+
 }

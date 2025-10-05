@@ -1,9 +1,11 @@
-﻿using Microsoft.Identity.Web;
+﻿using JobHuntApi;
+using Microsoft.Identity.Web;
 using System.Net.Http.Headers;
 
 namespace JobHuntLogger.Services
 {
-	public class JobHuntApiService(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+	public class JobHuntApiService(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory,
+		IConfiguration configuration, JobHuntApiClient jobHuntApiClient)
 	{
 
 
@@ -14,7 +16,21 @@ namespace JobHuntLogger.Services
 			var httpClient = httpClientFactory.CreateClient();
 			httpClient.BaseAddress = new Uri("http://jobhuntapi:8080/");
 			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-			return await httpClient.GetAsync("api/Application/temp");
+			return await httpClient.GetAsync("Application/temp");
+
+
+			//return await jobHuntApiClient.TempAsync();
+
+		}
+		public async Task<string> CallApiClient()
+		{
+			return await jobHuntApiClient.TempAsync();
+		}
+
+		public async Task<string> GetToken()
+		{
+			var scopes = configuration["Entra:Blazor:Scopes"]?.Split(' ') ?? Array.Empty<string>();
+			return await tokentAcquisition.GetAccessTokenForUserAsync(scopes);
 		}
 	}
 }

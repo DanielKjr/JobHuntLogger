@@ -47,7 +47,7 @@ namespace JobHuntAPI.Services
 			await _applicationContext.RemoveItem<JobApplication>(q => q.UserId == userId && q.JobApplicationId == applicationId);
 		}
 
-		public async Task DeleteByIdAsync(IEnumerable<Guid> ids, Guid userId)
+		public async Task DeleteByIdAsync(Guid userId, IEnumerable<Guid> ids)
 		{
 			await _applicationContext.RemoveItems<JobApplication>(q => q.Where(i => i.UserId == userId && ids.Contains(i.JobApplicationId)));
 		}

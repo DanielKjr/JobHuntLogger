@@ -2,12 +2,14 @@
 
 @inject NavigationManager NavigationManager
 @inject AuthenticationService AuthenticationService
+@inject JobHuntApiService JobHuntApiService
+@inject IJSRuntime JS
 
 <div class="login-or-out-container">
     <AuthorizeView>
         <Authorized>
             <div class="user-actions">
-                <div class="name">@userName</div>
+                <div class="name" @onclick="CopyTokenToClipboard" style="cursor:pointer;" title="Copy token">@userName</div>
                 <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
             </div>
         </Authorized>
@@ -18,15 +20,32 @@
             </div>
         </NotAuthorized>
     </AuthorizeView>
-</div>
 
+</div>
+@if (showCopied)
+{
+    <div class="toast-copied">
+        Token copied to clipboard!
+    </div>
+}
 @code{
 	
 
 	private string userName = "Guest";
-
+    private bool showCopied = false;
 	protected override async Task OnInitializedAsync()
 	{
 		userName = await AuthenticationService.GetUserNameAsync();
 	}
+
+    private async Task CopyTokenToClipboard()
+    {
+        var token = await JobHuntApiService.GetToken();
+        await JS.InvokeVoidAsync("copyTextToClipboard", token);
+        showCopied = true;
+        StateHasChanged();
+        await Task.Delay(3000); 
+        showCopied = false;
+        StateHasChanged();
+    }
 }

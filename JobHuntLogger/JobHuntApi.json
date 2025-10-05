@@ -1,0 +1,305 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "JobHuntAPI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/Application/new": {
+      "post": {
+        "tags": [
+          "Application"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/JobApplicationDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/new/multiple": {
+      "post": {
+        "tags": [
+          "Application"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/JobApplicationDto"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/all": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/delete": {
+      "delete": {
+        "tags": [
+          "Application"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "query",
+            "name": "applicationId",
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/delete/multiple": {
+      "delete": {
+        "tags": [
+          "Application"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/update": {
+      "patch": {
+        "tags": [
+          "Application"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/JobApplicationDisplayDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/update/multiple": {
+      "patch": {
+        "tags": [
+          "Application"
+        ],
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/JobApplicationDisplayDto"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Application/temp": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobApplicationDisplayDto": {
+      "required": [
+        "applicationPdf",
+        "company",
+        "jobApplicationId",
+        "jobTitle",
+        "resumePdf"
+      ],
+      "type": "object",
+      "properties": {
+        "jobApplicationId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "jobTitle": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "applicationPdf": {
+          "format": "byte",
+          "type": "string"
+        },
+        "resumePdf": {
+          "format": "byte",
+          "type": "string"
+        },
+        "appliedDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "replyDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "JobApplicationDto": {
+      "required": [
+        "applicationPdf",
+        "company",
+        "jobTitle",
+        "resumePdf",
+        "userId"
+      ],
+      "type": "object",
+      "properties": {
+        "userId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "jobTitle": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "applicationPdf": {
+          "format": "byte",
+          "type": "string"
+        },
+        "resumePdf": {
+          "format": "byte",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
