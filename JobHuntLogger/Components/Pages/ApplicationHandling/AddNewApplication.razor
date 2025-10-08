@@ -1,0 +1,38 @@
+﻿@page "/new"
+@using Microsoft.AspNetCore.Components.Forms;
+
+
+<UploadFile Title="Add new resume" OnFileUploaded="OnResumeUpload" />
+<UploadFile Title="Add new application" OnFileUploaded="OnApplicationUpload" />
+
+
+@if (uploadedApplication != null)
+{
+    <ul>
+        <li>Name: @uploadedApplication.Value.Name</li>
+        <li>Content type: @uploadedApplication.Value.ContentType</li>
+    </ul>
+}
+@if (uploadedResume != null)
+{
+    <ul>
+        <li>Name: @uploadedResume.Value.Name</li>
+        <li>Content type: @uploadedResume.Value.ContentType</li>
+    </ul>
+}
+
+@code {
+    private (string Name, string ContentType, byte[] Data)? uploadedApplication;
+    private (string Name, string ContentType, byte[] Data)? uploadedResume;
+
+    private void OnResumeUpload((string Name, string ContentType, byte[] Data) file)
+    {
+        uploadedResume = file;
+        // Additional logic here
+    }
+
+    private void OnApplicationUpload((string Name, string ContentType, byte[] Data) file)
+    {
+        uploadedApplication = file;
+    }
+}

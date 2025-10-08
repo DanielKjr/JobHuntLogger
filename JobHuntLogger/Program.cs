@@ -1,17 +1,13 @@
-using JobHuntApi;
 using JobHuntLogger.Components;
 using JobHuntLogger.Services;
-using JobHuntLogger.Services.Authorization;
 using JobHuntLogger.Utilities;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents(options =>
 	options.DetailedErrors = builder.Environment.IsDevelopment()).AddInteractiveServerComponents();
-
-
+builder.Services.AddLogging();
+builder.Logging.AddConsole();
 builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 

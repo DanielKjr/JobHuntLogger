@@ -1,0 +1,62 @@
+﻿@inject ILogger<AddNewApplication> Logger
+@attribute [Authorize]
+
+<h3>@Title</h3>
+
+<p>
+	<label>
+		Upload a pdf up to 5mb:
+		<InputFile OnChange="LoadFiles" />
+	</label>
+</p>
+
+@if (isLoading)
+{
+	<p>Uploading...</p>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+	<p class="text-danger">@errorMessage</p>
+}
+
+@code {
+	private long maxFileSize = 1024 * 1024 * 5; //5mb
+	private int maxAllowedFiles = 1;
+	private bool isLoading;
+	private string? errorMessage;
+	[Parameter] public string Title { get; set; }
+	public string[] PermittedExtensions { get; set; } = [".pdf"];
+	[Parameter] public EventCallback<(string Name, string ContentType, byte[] Data)> OnFileUploaded { get; set; }
+
+	private async Task LoadFiles(InputFileChangeEventArgs e)
+	{
+		isLoading = true;
+		errorMessage = null;
+
+		var ext = Path.GetExtension(e.File.Name).ToLowerInvariant();
+
+		if (string.IsNullOrEmpty(ext) || !PermittedExtensions.Contains(ext))
+		{
+			errorMessage = "Only PDF files are allowed.";
+			isLoading = false;
+			StateHasChanged();
+			return;
+		}
+
+		try
+		{
+			//to be used later 
+			var trustedFileName = Path.GetRandomFileName();
+			await using var ms = new MemoryStream();
+			await e.File.OpenReadStream(maxFileSize).CopyToAsync(ms);
+			await OnFileUploaded.InvokeAsync((e.File.Name, e.File.ContentType, ms.ToArray()));
+			Logger.LogInformation($"Uploadeded {e.File.Name} to Memory.");
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError("File: {Filename} Error: {Error}",
+				e.File.Name, ex.Message);
+		}
+		isLoading = false;
+	}
+}
