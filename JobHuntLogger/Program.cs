@@ -1,7 +1,11 @@
+using Blazored.Modal;
+using Blazored.SessionStorage;
+using Blazored.Toast;
 using JobHuntLogger.Components;
 using JobHuntLogger.Services;
 using JobHuntLogger.Utilities;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents(options =>
@@ -11,10 +15,17 @@ builder.Logging.AddConsole();
 builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
+//Blazored
+builder.Services.AddBlazoredSessionStorage();
+//https://github.com/Blazored/SessionStorage
+builder.Services.AddBlazoredModal();
+//https://blazored.github.io/Modal/
+builder.Services.AddBlazoredToast();
+//https://github.com/Blazored/Toast
+
 //Adding the compose secrets json as a configuration source
 builder.Configuration
 .AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddHttpClient();
