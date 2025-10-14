@@ -8,9 +8,10 @@ namespace JobHuntLogger.Utilities
 {
 	public static class ApiConfigExtentions
 	{
-		public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
+		public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
 		{
-			string baseUrl = "http://jobhuntapi:8080/";
+			
+			string baseUrl = configuration["JobHuntApi:BaseUrl"]!;
 			services.AddTransient<JobHuntApiService>();
 			services.AddScoped<ITokenProvider, TokenProvider>();
 			services.AddTransient<BearerTokenHandler>();

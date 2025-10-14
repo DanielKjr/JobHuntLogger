@@ -13,8 +13,10 @@ namespace JobHuntAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     [Migration("20251004122156_initial")]
-    partial class initial
-    {
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+	partial class initial
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
+	{
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

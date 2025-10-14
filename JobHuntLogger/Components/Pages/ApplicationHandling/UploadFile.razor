@@ -21,10 +21,9 @@ else if (!string.IsNullOrEmpty(errorMessage))
 
 @code {
 	private long maxFileSize = 1024 * 1024 * 5; //5mb
-	private int maxAllowedFiles = 1;
 	private bool isLoading;
 	private string? errorMessage;
-	[Parameter] public string Title { get; set; }
+	[Parameter] public string Title { get; set; } = "Upload File";
 	public string[] PermittedExtensions { get; set; } = [".pdf"];
 	[Parameter] public EventCallback<(string Name, string ContentType, byte[] Data)> OnFileUploaded { get; set; }
 

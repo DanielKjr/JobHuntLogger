@@ -14,7 +14,7 @@ namespace JobHuntLogger.Services
 			var scopes = configuration["Entra:Blazor:Scopes"]?.Split(' ') ?? Array.Empty<string>();
 			string accessToken = await tokentAcquisition.GetAccessTokenForUserAsync(scopes);
 			var httpClient = httpClientFactory.CreateClient();
-			httpClient.BaseAddress = new Uri("http://jobhuntapi:8080/");
+			httpClient.BaseAddress = new Uri(configuration["JobHuntApi:BaseUrl"]!);
 			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			return await httpClient.GetAsync("Application/temp");
 
