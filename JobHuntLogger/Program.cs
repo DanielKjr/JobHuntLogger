@@ -10,17 +10,12 @@ using Serilog.Core;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var url = builder.Configuration.GetSection("Seq:Url").Value;
-var levelSwitch = new LoggingLevelSwitch();
-builder.Host.UseSerilog((context, loggerconfig) =>
-{
-	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
-	loggerconfig.WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
-});
+var url = builder.Configuration.GetSection("Seq:Url").Value!;
+
 builder.Services.AddRazorComponents(options =>
 	options.DetailedErrors = builder.Environment.IsDevelopment()).AddInteractiveServerComponents();
-builder.Services.AddLogging();
-builder.Logging.AddConsole();
+//builder.Services.AddLogging();
+//builder.Logging.AddConsole();
 builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
@@ -36,10 +31,19 @@ builder.Services.AddBlazoredToast();
 //builder.Configuration
 //.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddHttpClient();
 builder.Services.AddApiConfiguration(builder.Configuration);
 //builder.Services.AddHttpClient();
+
+
+var levelSwitch = new LoggingLevelSwitch();
+builder.Host.UseSerilog((context, loggerconfig) =>
+{
+	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
+	loggerconfig.Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
+});
 var configuration = builder.Configuration;
 
 builder.Services.ConfigureAuthenticationAndAuthorization(configuration);
@@ -71,5 +75,5 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode();
 
-Log.Warning("We out here");
+
 app.Run();

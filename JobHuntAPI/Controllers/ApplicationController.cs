@@ -2,6 +2,7 @@
 using JobHuntAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace JobHuntAPI.Controllers
 {
@@ -162,6 +163,7 @@ namespace JobHuntAPI.Controllers
 		[HttpGet("temp")]
 		public string Temp()
 		{
+			Log.Warning("API out here");
 			return "accessed";
 		}
 	}

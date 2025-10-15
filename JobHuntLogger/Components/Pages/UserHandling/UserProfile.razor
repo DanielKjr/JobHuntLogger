@@ -4,6 +4,7 @@
 @inject ILogger<UserProfile> Logger
 @inject Microsoft.Identity.Web.ITokenAcquisition TokenAcquisition
 @inject JobHuntApiService JobHuntApiService
+
 @attribute [Authorize]
 
 <h3>User Profile</h3>
@@ -49,6 +50,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
+		Logger.LogWarning("We out here");
 		try
 		{
 			var scopes = new[] { "User.Read" };

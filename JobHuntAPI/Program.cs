@@ -2,11 +2,14 @@ using DK.GenericLibrary.ServiceCollection;
 using JobHuntAPI.Repository;
 using JobHuntAPI.Services;
 using JobHuntAPI.Services.Interfaces;
+using JobHuntAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
-
+using Serilog;
+using Serilog.Core;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +57,15 @@ builder.Configuration
 
 builder.Configuration
 	.AddJsonFile("/run/secrets/apiinfo", optional: false, reloadOnChange: true);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<HttpContextEnricher>();
+var url = builder.Configuration.GetSection("Seq:Url").Value!;
+var levelSwitch = new LoggingLevelSwitch();
+builder.Host.UseSerilog((context, loggerconfig) =>
+{
+	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
+	loggerconfig.Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
+});
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -76,5 +88,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();
