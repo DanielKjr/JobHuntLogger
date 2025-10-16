@@ -102,10 +102,10 @@ namespace JobHuntAPI.Services
 			var existingResumePdf = PDFEncryptionHelper.DecryptPdf(entry.EncryptedResumePdf, userIdString, _secret);
 
 			// Only update if the file has changed
-			if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf, existingAppPdf))
+			if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf.Content, existingAppPdf.Content))
 				entry.EncryptedApplicationPdf = PDFEncryptionHelper.EncryptPdf(application.ApplicationPdf, userIdString, _secret);
 
-			if (PDFEncryptionHelper.IsFileChanged(application.ResumePdf, existingResumePdf))
+			if (PDFEncryptionHelper.IsFileChanged(application.ResumePdf.Content, existingResumePdf.Content))
 				entry.EncryptedResumePdf = PDFEncryptionHelper.EncryptPdf(application.ResumePdf, userIdString, _secret);
 
 			await _applicationContext.UpdateItem(entry);

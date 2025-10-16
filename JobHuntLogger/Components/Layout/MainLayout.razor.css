@@ -19,6 +19,7 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
@@ -52,7 +53,7 @@ main {
     }
 
     .sidebar {
-        width: 250px;
+        width: 20vw;
         height: 100vh;
         position: sticky;
         top: 0;
@@ -62,7 +63,9 @@ main {
         position: sticky;
         top: 0;
         z-index: 1;
+
     }
+
 
     .top-row.auth ::deep a:first-child {
         flex: 1;
@@ -71,9 +74,11 @@ main {
     }
 
     .top-row, article {
-        padding-left: 2rem !important;
+        /*padding-left: 2rem !important;*/
         padding-right: 1.5rem !important;
     }
+
+
 }
 
 #blazor-error-ui {
@@ -93,4 +98,34 @@ main {
         position: absolute;
         right: 0.75rem;
         top: 0.5rem;
+    }
+
+
+
+.navbar-toggler, button.navbar-toggler {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    appearance: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem #f7f7f7;
+/*    color: #333;
+    outline: none !important;
+    align-content: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    padding-right: 10px;*/
+}
+
+.navbar-toggler:hover {
+    border: 1px solid #888 !important;
+}
+
+    .navbar-toggler:focus,
+    button.navbar-toggler:focus {
+        outline: none !important;
+        box-shadow:none;
     }

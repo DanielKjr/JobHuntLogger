@@ -8,7 +8,7 @@
 		string JobTitle { get; set; }
 		DateTime AppliedDate { get; set; }
 		DateTime ReplyDate { get; set; }
-		byte[] EncryptedApplicationPdf { get; set; }
-		byte[] EncryptedResumePdf { get; set; }
+		PdfFile EncryptedApplicationPdf { get; set; }
+		PdfFile EncryptedResumePdf { get; set; }
 	}
 }

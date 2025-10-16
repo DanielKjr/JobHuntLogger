@@ -25,9 +25,9 @@ namespace JobHuntAPI.Model
 		public DateTime ReplyDate { get; set; }
 
 		
-		public byte[] EncryptedApplicationPdf { get; set; } = Array.Empty<byte>();
+		public PdfFile EncryptedApplicationPdf { get; set; } 
 
-		public byte[] EncryptedResumePdf { get; set; } = Array.Empty<byte>();
+		public PdfFile EncryptedResumePdf { get; set; } 
 
 		public JobApplication()
 		{

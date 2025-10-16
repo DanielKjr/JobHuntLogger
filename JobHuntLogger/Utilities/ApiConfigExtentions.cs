@@ -1,4 +1,4 @@
-﻿using JobHuntApi;
+﻿using JobHuntApiService;
 using JobHuntLogger.Services;
 using JobHuntLogger.Services.Authorization;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -12,7 +12,7 @@ namespace JobHuntLogger.Utilities
 		{
 			
 			string baseUrl = configuration["JobHuntApi:BaseUrl"]!;
-			services.AddTransient<JobHuntApiService>();
+			services.AddTransient<TokenFetcher>();
 			services.AddScoped<ITokenProvider, TokenProvider>();
 			services.AddTransient<BearerTokenHandler>();
 			services.AddHttpClient<JobHuntApiClient>((sp, client) =>

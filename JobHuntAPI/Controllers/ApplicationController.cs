@@ -161,6 +161,8 @@ namespace JobHuntAPI.Controllers
 
 
 		[HttpGet("temp")]
+		[Produces("text/plain")]
+		[ProducesResponseType(typeof(string), StatusCodes.Status200OK, "text/plain")]
 		public string Temp()
 		{
 			Log.Warning("API out here");

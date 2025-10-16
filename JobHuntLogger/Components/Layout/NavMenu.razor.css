@@ -82,7 +82,7 @@
 }
 
 .nav-scrollable {
-    display: none;
+    display: block;
 }
 
 .navbar-toggler:checked ~ .nav-scrollable {
@@ -91,7 +91,7 @@
 
 @media (min-width: 641px) {
     .navbar-toggler {
-        display: none;
+        display: block;
     }
 
     .nav-scrollable {

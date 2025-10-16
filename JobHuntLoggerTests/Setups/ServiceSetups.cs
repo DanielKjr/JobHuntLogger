@@ -1,4 +1,4 @@
-﻿using JobHuntApi;
+﻿using JobHuntApiService;
 using JobHuntLogger.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -22,13 +22,13 @@ namespace JobHuntLoggerTests.Setups
 			var configurationMock = new Mock<IConfiguration>();
 			var apiClientMock = new Mock<JobHuntApiClient>("http://dummy", new HttpClient());
 
-			var jobHuntApiService = new JobHuntApiService(
+			var jobHuntApiService = new TokenFetcher(
 				tokenAcquisitionMock.Object,
 				httpClientFactoryMock.Object,
 				configurationMock.Object,
 				apiClientMock.Object
 			);
-			Services.AddSingleton<JobHuntApiService>(jobHuntApiService);
+			Services.AddSingleton<TokenFetcher>(jobHuntApiService);
 		}
 
 		public static void RegisterUnauthorizedSetup(IServiceCollection Services)

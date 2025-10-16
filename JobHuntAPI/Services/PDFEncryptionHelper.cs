@@ -1,31 +1,42 @@
-﻿using System.Security.Cryptography;
+﻿using JobHuntAPI.Model;
+using System.Security.Cryptography;
 
 namespace JobHuntAPI.Services
 {
 	public class PDFEncryptionHelper
 	{
-		public static byte[] EncryptPdf(byte[] pdfBytes, string userId, string secret)
+		public static PdfFile EncryptPdf(PdfFile pdf, string userId, string secret)
 		{
 			using var aes = Aes.Create();
 			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
 			aes.Key = key;
 			aes.GenerateIV();
 			using var encryptor = aes.CreateEncryptor();
-			var encrypted = encryptor.TransformFinalBlock(pdfBytes, 0, pdfBytes.Length);
-			
-			return aes.IV.Concat(encrypted).ToArray();
+			var encrypted = encryptor.TransformFinalBlock(pdf.Content, 0, pdf.Content.Length);
+			return new PdfFile()
+			{
+				FileName = pdf.FileName,
+				ContentType = pdf.ContentType,
+				Content = aes.IV.Concat(encrypted).ToArray()
+			};
+			//return aes.IV.Concat(encrypted).ToArray();
 		}
 
-		public static byte[] DecryptPdf(byte[] encryptedPdf, string userId, string secret)
+		public static PdfFile DecryptPdf(PdfFile encryptedPdf, string userId, string secret)
 		{
 			using var aes = Aes.Create();
 			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
 			aes.Key = key;
-			var iv = encryptedPdf.Take(aes.BlockSize / 8).ToArray();
-			var data = encryptedPdf.Skip(aes.BlockSize / 8).ToArray();
+			var iv = encryptedPdf.Content.Take(aes.BlockSize / 8).ToArray();
+			var data = encryptedPdf.Content.Skip(aes.BlockSize / 8).ToArray();
 			aes.IV = iv;
 			using var decryptor = aes.CreateDecryptor();
-			return decryptor.TransformFinalBlock(data, 0, data.Length);
+			return new PdfFile()
+			{
+				FileName = encryptedPdf.FileName,
+				ContentType = encryptedPdf.ContentType,
+				Content = decryptor.TransformFinalBlock(data, 0, data.Length)
+			};
 		}
 
 		public static bool IsFileChanged(byte[] newFile, byte[] existingFile)

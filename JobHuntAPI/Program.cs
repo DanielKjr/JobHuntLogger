@@ -5,11 +5,9 @@ using JobHuntAPI.Services.Interfaces;
 using JobHuntAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Core;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobHuntAPI", Version = "v1" });
 
 	// Add JWT Bearer token support for Swagger UI
@@ -47,6 +46,7 @@ builder.Services.AddSwaggerGen(c =>
 	});
 });
 
+
 builder.Services.AddScopedAsyncRepository<ApplicationContext>();
 builder.Services.AddDbContextFactory<ApplicationContext>();
 
@@ -64,7 +64,7 @@ var levelSwitch = new LoggingLevelSwitch();
 builder.Host.UseSerilog((context, loggerconfig) =>
 {
 	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
-	loggerconfig.Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
+	loggerconfig.Enrich.WithProperty("System: ", "JobHuntApi").Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
 });
 
 

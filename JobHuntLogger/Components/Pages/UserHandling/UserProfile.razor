@@ -1,9 +1,10 @@
 @page "/profile"
+@using JobHuntApiService
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject NavigationManager Navigation
 @inject ILogger<UserProfile> Logger
 @inject Microsoft.Identity.Web.ITokenAcquisition TokenAcquisition
-@inject JobHuntApiService JobHuntApiService
+@inject JobHuntApiClient JobHuntApiClient
 
 @attribute [Authorize]
 
@@ -50,7 +51,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		Logger.LogWarning("We out here");
+		
 		try
 		{
 			var scopes = new[] { "User.Read" };
@@ -72,7 +73,7 @@ else
 
 	private async Task Communicate()
 	{
-		var s = await JobHuntApiService.CallApiClient();
+		var s = await JobHuntApiClient.TempAsync();
 	}
 
 

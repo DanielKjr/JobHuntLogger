@@ -42,7 +42,7 @@ var levelSwitch = new LoggingLevelSwitch();
 builder.Host.UseSerilog((context, loggerconfig) =>
 {
 	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
-	loggerconfig.Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
+	loggerconfig.Enrich.WithProperty("System: ", "JobHuntLogger").Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
 });
 var configuration = builder.Configuration;
 

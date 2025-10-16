@@ -1,21 +1,24 @@
-﻿@using System.Diagnostics
-
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 @inject AuthenticationService AuthenticationService
-@inject JobHuntApiService JobHuntApiService
+@inject TokenFetcher JobHuntApiService
 @inject IJSRuntime JS
 @inject IToastService toastService
 
 <div class="login-or-out-container">
     <AuthorizeView>
-        <Authorized>
+        <Authorizing>
+            <div class="user-actions">
+                <div class="name">Authorizing...</div>
+			</div>
+        </Authorizing>
+        <Authorized >
             <div class="user-actions">
                 <div class="name" @onclick="CopyTokenToClipboard" style="cursor:pointer;" title="Copy token">@userName</div>
                 @* <button class="btn btn-info" @onclick="@(() => toastService.ShowInfo("Token copied!"))">Info Toast</button> *@
                 <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
             </div>
         </Authorized>
-        <NotAuthorized>
+        <NotAuthorized >
             <div class="user-actions">
                 <div class="name">@userName</div>
                 <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
@@ -26,13 +29,17 @@
 </div>
 
 @code{
-	
+    //TODO move fetching of user somewhere it is accessible for other components @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 
 	private string userName = "Guest";
 	protected override async Task OnInitializedAsync()
 	{
 		userName = await AuthenticationService.GetUserNameAsync();
+        
 	}
+
+    
+    
 
     private async Task CopyTokenToClipboard()
     {
