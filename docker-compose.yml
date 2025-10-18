@@ -21,8 +21,11 @@ services:
     build:
       context: .
       dockerfile: JobHuntAPI\Dockerfile
+    volumes:
+       - ./JobHuntApi:/src/JobHuntApi
     ports:
        - "8160:8080"
+    command: dotnet watch --project /src/JobHuntApi run
     secrets:
      - dbinfo
      - apiinfo

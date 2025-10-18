@@ -1,39 +1,106 @@
 ﻿@page "/new"
+@using JobHuntApiService
 @using Microsoft.AspNetCore.Components.Forms;
+@inject JobHuntApiClient JobHuntApiClient
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject ILogger<AddNewApplication> Logger
 
 
-<UploadFile Title="Add new resume" OnFileUploaded="OnResumeUpload" />
-<UploadFile Title="Add new application" OnFileUploaded="OnApplicationUpload" />
 
-@if (uploadedApplication != null)
-{
-    <ul>
-        <li>Name: @uploadedApplication.Value.Name</li>
-        <li>Content type: @uploadedApplication.Value.ContentType</li>
-    </ul>
-}
-@if (uploadedResume != null)
-{
-    <ul>
-        <li>Name: @uploadedResume.Value.Name</li>
-        <li>Content type: @uploadedResume.Value.ContentType</li>
-    </ul>
-}
+
+<EditForm Model="jobApplicationDto" autocomplete="off" OnValidSubmit="Submit">
+
+	<div class="newApplicationContainer">
+		<label>
+			Company name:
+			<InputText @bind-Value="jobApplicationDto.Company" />
+		</label>
+
+		<label>
+			Position:
+			<InputText @bind-Value="jobApplicationDto.JobTitle" />
+		</label>
+		<label>
+			Date applied:
+			<InputDate @bind-Value="jobApplicationDto.Date" />
+		</label>
+		<label>
+			Deadline for application:
+			<InputDate @bind-Value="jobApplicationDto.Deadline" />
+		</label>
+		<UploadFile Title="Resume" OnFileUploaded="OnResumeUpload" />
+		<UploadFile Title="Application" OnFileUploaded="OnApplicationUpload" />
+
+		@if (uploadedApplication != null)
+		{
+			<ul>
+				<li>Name: @uploadedApplication.Value.Name</li>
+				<li>Content type: @uploadedApplication.Value.ContentType</li>
+			</ul>
+		}
+		@if (uploadedResume != null)
+		{
+			<ul>
+				<li>Name: @uploadedResume.Value.Name</li>
+				<li>Content type: @uploadedResume.Value.ContentType</li>
+			</ul>
+		}
+	</div>
+
+</EditForm>
+
 
 @code {
-     private (string Name, string ContentType, byte[] Data)? uploadedApplication;
-    private (string Name, string ContentType, byte[] Data)? uploadedResume;
+	private (string Name, string ContentType, byte[] Data)? uploadedApplication;
+	private (string Name, string ContentType, byte[] Data)? uploadedResume;
+	public JobApplicationDto jobApplicationDto = new JobApplicationDto();
+	[Parameter] 
+	public User User { get; set; }
 
-    private void OnResumeUpload((string Name, string ContentType, byte[] Data) file)
-    {
-        uploadedResume = file;
-        // Additional logic here
-    }
+	protected override void OnInitialized()
+	{
+		jobApplicationDto.Date = DateTime.Now;
+		jobApplicationDto.Deadline = DateTime.Now.AddMonths(1);
+		base.OnInitialized();
+	}
+	private void OnResumeUpload((string Name, string ContentType, byte[] Data) file)
+	{
+		uploadedResume = file;
+		jobApplicationDto.ResumePdf = new PdfFile(){
+			FileName = file.Name,
+			ContentType = file.ContentType,
+			Content = file.Data
+		};
+		
+	}
 
-    private void OnApplicationUpload((string Name, string ContentType, byte[] Data) file)
-    {
-        uploadedApplication = file;
-    }
+	private void OnApplicationUpload((string Name, string ContentType, byte[] Data) file)
+	{
+		uploadedApplication = file;
+		jobApplicationDto.ApplicationPdf = new PdfFile()
+		{
+			FileName = file.Name,
+			ContentType = file.ContentType,
+			Content = file.Data
+		};
+	}
 
-    
+	private async Task Submit()
+	{
+		try
+		{
+			//temporary, I want the user instance to be available somewhere in the 
+			// cascading params
+			var user= await GraphServiceClient.Me.Request().GetAsync();
+			jobApplicationDto.UserId = Guid.Parse(user.Id);
+			await JobHuntApiClient.NewAsync(jobApplicationDto);
+		}
+		catch (Exception e)
+		{
+			
+			Logger.LogError("Error submitting new application: {Error}", e.Message);
+		}
+	}
+
+
 }

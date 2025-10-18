@@ -285,16 +285,6 @@
                 "schema": {
                   "type": "string"
                 }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "string"
-                }
               }
             }
           }
@@ -370,6 +360,14 @@
           },
           "resumePdf": {
             "$ref": "#/components/schemas/PdfFile"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

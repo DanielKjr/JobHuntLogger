@@ -4,18 +4,17 @@ using Blazored.Toast;
 using JobHuntLogger.Components;
 using JobHuntLogger.Services;
 using JobHuntLogger.Utilities;
+using JobHuntLogger.Utilities.Extensions;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Serilog;
 using Serilog.Core;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var url = builder.Configuration.GetSection("Seq:Url").Value!;
+
 
 builder.Services.AddRazorComponents(options =>
 	options.DetailedErrors = builder.Environment.IsDevelopment()).AddInteractiveServerComponents();
-//builder.Services.AddLogging();
-//builder.Logging.AddConsole();
 builder.Services.AddControllersWithViews();
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
@@ -34,19 +33,25 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddHttpClient();
-builder.Services.AddApiConfiguration(builder.Configuration);
-//builder.Services.AddHttpClient();
 
-
+//configure logging
 var levelSwitch = new LoggingLevelSwitch();
-builder.Host.UseSerilog((context, loggerconfig) =>
+builder.Host.UseSerilog((context, services, loggerconfig) =>
 {
-	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
-	loggerconfig.Enrich.WithProperty("System: ", "JobHuntLogger").Enrich.WithHttpContextEnricher().WriteTo.Seq(url, apiKey: builder.Configuration.GetSection("Seq:ApiKey").Value, controlLevelSwitch: levelSwitch);
-});
-var configuration = builder.Configuration;
+	// Retrieve IHttpContextAccessor from the host's service provider to pass into the enricher
+	var httpContextAccessor = services.GetRequiredService<IHttpContextAccessor>();
 
-builder.Services.ConfigureAuthenticationAndAuthorization(configuration);
+	loggerconfig.MinimumLevel.ControlledBy(levelSwitch);
+	// Use a clean property name
+	loggerconfig.Enrich.WithProperty("Application", "JobHuntLogger")
+		.Enrich.WithHttpContextEnricher(httpContextAccessor)
+		.WriteTo.Seq(context.Configuration.GetValue<string>("Seq:Url")!, apiKey: context.Configuration.GetValue<string>("Seq:ApiKey"), controlLevelSwitch: levelSwitch);
+	loggerconfig.WriteTo.Console();
+});
+
+builder.Services.AddApiConfiguration(builder.Configuration);
+builder.Services.RegisterTokenCache(builder.Configuration);
+builder.Services.RegisterAuthorization(builder.Configuration);
 
 //Optional enforce authorize on all pages
 //builder.Services.AddAuthorizationBuilder()
@@ -60,18 +65,25 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Error", createScopeForErrors: true);
+	app.UseHsts();
 }
+else
+{
+	app.UseDeveloperExceptionPage();
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-app.MapControllers();
-
+//ensure authentication/authorization is run before endpoints are executed
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseAntiforgery();
 
+
+app.MapControllers();
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode();
 

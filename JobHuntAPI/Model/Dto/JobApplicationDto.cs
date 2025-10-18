@@ -9,5 +9,7 @@ namespace JobHuntAPI.Model.Dto
 		public required string Company { get; set; }
 		public required PdfFile ApplicationPdf { get; set; }
 		public required PdfFile ResumePdf { get; set; }
+		public DateTime Date { get; set; }
+		public DateTime Deadline { get; set; }
 	}
 }

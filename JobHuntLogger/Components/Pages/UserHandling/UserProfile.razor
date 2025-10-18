@@ -51,20 +51,23 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		
+		Logger.LogWarning("Viewing userprofile.");
+
+
 		try
 		{
-			var scopes = new[] { "User.Read" };
-			accessToken = await TokenAcquisition.GetAccessTokenForUserAsync(
-				scopes: scopes,
-				authenticationScheme: "OpenIdConnect"
-			);
+			// var scopes = new[] { "User.Read" };
+			// accessToken = await TokenAcquisition.GetAccessTokenForUserAsync(
+			// 	scopes: scopes,
+			// 	authenticationScheme: "OpenIdConnect"
+			// );
 
 			user = await GraphServiceClient.Me.Request().GetAsync();
 		}
 		catch (Exception ex)
 		{
 			siteMsg = "Error loading user... redirecting to login...";
+			Logger.LogError(ex, "Error thrown when accessing UserProfile.");
 			StateHasChanged();
 			await Task.Delay(2000);
 			Navigation.NavigateTo("/Account/Login", forceLoad: true);

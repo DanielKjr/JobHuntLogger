@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>33c09d23-fc97-4d25-9349-04518ef88d25</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <RazorLangVersion>Latest</RazorLangVersion>
   </PropertyGroup>
 
   <ItemGroup>

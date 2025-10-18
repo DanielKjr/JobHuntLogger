@@ -1,23 +1,24 @@
 ﻿@inject ILogger<AddNewApplication> Logger
 @attribute [Authorize]
 
-<h3>@Title</h3>
+<div>
+	<p>
+		<label>
+			Upload a @Title:
+			<InputFile OnChange="LoadFiles" />
+		</label>
+	</p>
 
-<p>
-	<label>
-		Upload a pdf up to 5mb:
-		<InputFile OnChange="LoadFiles" />
-	</label>
-</p>
+	@if (isLoading)
+	{
+		<p>Uploading...</p>
+	}
+	else if (!string.IsNullOrEmpty(errorMessage))
+	{
+		<p class="text-danger">@errorMessage</p>
+	}
+</div>
 
-@if (isLoading)
-{
-	<p>Uploading...</p>
-}
-else if (!string.IsNullOrEmpty(errorMessage))
-{
-	<p class="text-danger">@errorMessage</p>
-}
 
 @code {
 	private long maxFileSize = 1024 * 1024 * 5; //5mb
