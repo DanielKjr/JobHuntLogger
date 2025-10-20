@@ -4,38 +4,39 @@
 
 
 <div class="page">
-    @if (_drawerOpen)
-    {
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+	@if (_drawerOpen)
+	{
+		<nav class="sidebar">
+			<NavMenu />
+		</nav>
 
-    }
- 
-    <main>
-        <div class="top-row auth">
-            <button title="Hide menu" class="navbar-toggler" @onclick="DrawerToggle">            </button>
-           @* <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>           *@
-            <LoginOrOut/>
-        </div>
+	}
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+	<main>
+		<header class="top-row auth">
+				<button title="Hide menu" class="navbar-toggler" @onclick="DrawerToggle">            </button>
+				<LoginOrOut />
+		</header>
+
+
+		<article class="content px-4">
+			@Body
+		</article>
+	</main>
 </div>
-<BlazoredToasts Position="ToastPosition.BottomRight" Timeout="3"/>
+<BlazoredToasts Position="ToastPosition.BottomRight" Timeout="3" />
 
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+	An unhandled error has occurred.
+	<a href="" class="reload">Reload</a>
+	<a class="dismiss">🗙</a>
 </div>
 @code {
-    bool _drawerOpen = true;
+	bool _drawerOpen = true;
 
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
+
+	void DrawerToggle()
+	{
+		_drawerOpen = !_drawerOpen;
+	}
 }

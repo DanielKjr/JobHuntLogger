@@ -9,7 +9,7 @@ namespace JobHuntAPI.Services
 	public class ApplicationService(IAsyncRepository<ApplicationContext> _applicationContext, IConfiguration _configuration) : IApplicationService
 	{
 		private readonly string _secret = _configuration["ApiConfig:Secret"] ?? throw new ArgumentNullException("Secret not found in configuration");
-		public async Task AddNewAsync(JobApplicationDto dto)
+		public async Task AddNewAsync(NewJobApplicationDto dto)
 		{
 			string userId = dto.UserId.ToString();
 			JobApplication newApplication = new JobApplication()
@@ -17,13 +17,16 @@ namespace JobHuntAPI.Services
 				UserId = dto.UserId,
 				JobTitle = dto.JobTitle,
 				Company = dto.Company,
-				EncryptedApplicationPdf = PDFEncryptionHelper.EncryptPdf(dto.ApplicationPdf, userId, _secret),
-				EncryptedResumePdf = PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret)
+				EncryptedApplicationPdf = dto.ApplicationPdf is not null
+	? PDFEncryptionHelper.EncryptPdf(dto.ApplicationPdf, userId, _secret)
+	: null!,
+				EncryptedResumePdf = dto.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret) : null!
+				//EncryptedResumePdf = PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret)
 			};
 			await _applicationContext.AddItem(dto);
 		}
 
-		public async Task AddNewAsync(IEnumerable<JobApplicationDto> dtos)
+		public async Task AddNewAsync(IEnumerable<NewJobApplicationDto> dtos)
 		{
 			string userId = dtos.First().UserId.ToString();
 			List<JobApplication> newApplications = new List<JobApplication>();
@@ -34,8 +37,10 @@ namespace JobHuntAPI.Services
 					UserId = item.UserId,
 					JobTitle = item.JobTitle,
 					Company = item.Company,
-					EncryptedApplicationPdf = PDFEncryptionHelper.EncryptPdf(item.ApplicationPdf, userId, _secret),
-					EncryptedResumePdf = PDFEncryptionHelper.EncryptPdf(item.ResumePdf, userId, _secret)
+					EncryptedApplicationPdf = item.ApplicationPdf is not null
+	? PDFEncryptionHelper.EncryptPdf(item.ApplicationPdf, userId, _secret)
+	: null!,
+					EncryptedResumePdf = item.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(item.ResumePdf, userId, _secret) : null!
 				};
 				newApplications.Add(newApplication);
 			}

@@ -7,8 +7,8 @@ namespace JobHuntAPI.Services.Interfaces
 {
 	public interface IApplicationService
 	{
-		Task AddNewAsync(JobApplicationDto dto);
-		Task AddNewAsync(IEnumerable<JobApplicationDto> dtos);
+		Task AddNewAsync(NewJobApplicationDto dto);
+		Task AddNewAsync(IEnumerable<NewJobApplicationDto> dtos);
 		Task DeleteByIdAsync(Guid userId, Guid applicationId);
 		Task DeleteByIdAsync(Guid userId, IEnumerable<Guid> ids);
 		Task UpdateApplicationAsync<T>(Guid userId, T application) where T : JobApplicationDisplayDto;

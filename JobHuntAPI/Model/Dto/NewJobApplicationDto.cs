@@ -1,10 +1,19 @@
-﻿namespace JobHuntAPI.Model.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JobHuntAPI.Model.Dto
 {
 	public class NewJobApplicationDto
 	{
-		public string JobTitle { get; set; }
-		public string Company { get; set; }
-		public PdfFile ApplicationPdf { get; set; }
-		public PdfFile ResumePdf { get; set; }
+		public required Guid UserId { get; set; }
+		[MinLength(3), MaxLength(100)]
+		public required string JobTitle { get; set; }
+		[MinLength(3), MaxLength(100)]
+		public required string Company { get; set; }
+
+		public PdfFileDto? ApplicationPdf { get; set; }
+		public PdfFileDto? ResumePdf { get; set; }
+
+		public DateTime Date { get; set; }
+		public DateTime Deadline { get; set; }
 	}
 }

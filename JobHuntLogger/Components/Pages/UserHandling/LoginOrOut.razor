@@ -5,49 +5,50 @@
 @inject IToastService toastService
 
 <div class="login-or-out-container">
-    <AuthorizeView>
-        <Authorizing>
-            <div class="user-actions">
-                <div class="name">Authorizing...</div>
+	<AuthorizeView>
+		<Authorizing>
+			<div class="user-actions">
+				<div class="name">Authorizing...</div>
 			</div>
-        </Authorizing>
-        <Authorized >
-            <div class="user-actions">
-                <div class="name" @onclick="CopyTokenToClipboard" style="cursor:pointer;" title="Copy token">@userName</div>
-                @* <button class="btn btn-info" @onclick="@(() => toastService.ShowInfo("Token copied!"))">Info Toast</button> *@
-                <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
-            </div>
-        </Authorized>
-        <NotAuthorized >
-            <div class="user-actions">
-                <div class="name">@userName</div>
-                <button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
-            </div>
-        </NotAuthorized>
-    </AuthorizeView>
+		</Authorizing>
+		<Authorized>
+			<div class="user-actions">
+				<div class="name" @onclick="CopyTokenToClipboard" style="cursor:pointer;" title="Copy token">@userName</div>
+				@* <button class="btn btn-info" @onclick="@(() => toastService.ShowInfo("Token copied!"))">Info Toast</button> *@
+				<button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
+			</div>
+		</Authorized>
+		<NotAuthorized>
+			<div class="user-actions">
+				<div class="name">@userName</div>
+				<button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/Login", forceLoad: true))">Login</button>
+			</div>
+		</NotAuthorized>
+	</AuthorizeView>
 
 </div>
 
-@code{
-    //TODO move fetching of user somewhere it is accessible for other components @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+
+@code {
+	//TODO move fetching of user somewhere it is accessible for other components @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 
 	private string userName = "Guest";
 	protected override async Task OnInitializedAsync()
 	{
 		userName = await AuthenticationService.GetUserNameAsync();
-        
+
 	}
 
-    
-    
 
-    private async Task CopyTokenToClipboard()
-    {
-        var token = await JobHuntApiService.GetToken();
-        await JS.InvokeVoidAsync("copyTextToClipboard", token);
-        // showCopied = true;
+
+
+	private async Task CopyTokenToClipboard()
+	{
+		var token = await JobHuntApiService.GetToken();
+		await JS.InvokeVoidAsync("copyTextToClipboard", token);
+		// showCopied = true;
 		toastService.ShowSuccess("Token copied to clipboard!");
-        StateHasChanged();
-        await Task.Delay(3000); 
-    }
+		StateHasChanged();
+		await Task.Delay(3000);
+	}
 }

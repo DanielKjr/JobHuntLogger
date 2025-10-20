@@ -14,17 +14,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/NewJobApplicationDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/NewJobApplicationDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/NewJobApplicationDto"
               }
             }
           }
@@ -47,7 +47,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/NewJobApplicationDto"
                 }
               }
             },
@@ -55,7 +55,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/NewJobApplicationDto"
                 }
               }
             },
@@ -63,7 +63,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/NewJobApplicationDto"
                 }
               }
             }
@@ -333,12 +333,10 @@
         },
         "additionalProperties": false
       },
-      "JobApplicationDto": {
+      "NewJobApplicationDto": {
         "required": [
-          "applicationPdf",
           "company",
           "jobTitle",
-          "resumePdf",
           "userId"
         ],
         "type": "object",
@@ -348,18 +346,22 @@
             "format": "uuid"
           },
           "jobTitle": {
+            "maxLength": 100,
+            "minLength": 3,
             "type": "string",
             "nullable": true
           },
           "company": {
+            "maxLength": 100,
+            "minLength": 3,
             "type": "string",
             "nullable": true
           },
           "applicationPdf": {
-            "$ref": "#/components/schemas/PdfFile"
+            "$ref": "#/components/schemas/PdfFileDto"
           },
           "resumePdf": {
-            "$ref": "#/components/schemas/PdfFile"
+            "$ref": "#/components/schemas/PdfFileDto"
           },
           "date": {
             "type": "string",
@@ -383,6 +385,30 @@
             "type": "string",
             "format": "uuid"
           },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PdfFileDto": {
+        "required": [
+          "content",
+          "contentType",
+          "fileName"
+        ],
+        "type": "object",
+        "properties": {
           "fileName": {
             "type": "string",
             "nullable": true

@@ -15,19 +15,34 @@ namespace JobHuntLogger.Utilities.Extensions
 				.AddMicrosoftGraph().
 				AddDistributedTokenCaches();
 			// Ensure cookie lifetime is independent from token lifetime and lasts 14 days with sliding expiration.
-			services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+			services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, static options =>
 			{
 				options.ExpireTimeSpan = TimeSpan.FromDays(14);
 				options.SlidingExpiration = true;
 				options.Cookie.IsEssential = true;
 				options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 				options.Cookie.HttpOnly = true;
+
+				//Attempt to persist tokens so that you don't have to login daily
+				options.Events = new CookieAuthenticationEvents
+				{
+					OnSigningIn = async ctx =>
+					{
+						ctx.Properties.IsPersistent = true;
+						ctx.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14);
+						await Task.CompletedTask;
+
+					}
+				};
+				
+				
 			});
 
 			// Prevent the OIDC middleware from overriding token lifetime
 			services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 			{
 				options.UseTokenLifetime = false;
+				
 			});
 			services.AddAuthorization();
 			services.AddCascadingAuthenticationState();

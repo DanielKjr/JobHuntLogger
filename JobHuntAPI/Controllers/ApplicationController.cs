@@ -14,7 +14,7 @@ namespace JobHuntAPI.Controllers
 	{
 
 		[HttpPost("new")]
-		public async Task<IActionResult> AddNew([FromBody] JobApplicationDto dto)
+		public async Task<IActionResult> AddNew([FromBody] NewJobApplicationDto dto)
 		{
 			try
 			{
@@ -36,7 +36,7 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpPost("new/multiple")]
-		public async Task<IActionResult> AddMultipleNew([FromBody] IEnumerable<JobApplicationDto> dtos)
+		public async Task<IActionResult> AddMultipleNew([FromBody] IEnumerable<NewJobApplicationDto> dtos)
 		{
 			try
 			{

@@ -27,12 +27,9 @@ namespace JobHuntAPI.Model
 		
 		public PdfFile EncryptedApplicationPdf { get; set; } 
 
-		public PdfFile EncryptedResumePdf { get; set; } 
+		public PdfFile EncryptedResumePdf { get; set; }
 
-		public JobApplication()
-		{
-			AppliedDate = DateTime.Now;
-		}
+		//public JobApplication() => AppliedDate = DateTime.Now;
 
 	}
 }
