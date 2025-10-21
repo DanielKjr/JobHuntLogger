@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 
 namespace JobHuntLogger.Services
 {
-	public class TokenFetcher(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory,
+	public class TokenFetcherService(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory,
 		IConfiguration configuration, JobHuntApiClient jobHuntApiClient)
 	{
 

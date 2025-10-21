@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\clipboard.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <OpenApiReference Include="JobHuntApi.json" ClassName="JobHuntApiClient" Namespace="JobHuntApiService" />
   </ItemGroup>
 
@@ -49,8 +45,7 @@
 
 
   <ItemGroup>
-    <Folder Include="Components\Core\" />
-    <Folder Include="Models\Dtos\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

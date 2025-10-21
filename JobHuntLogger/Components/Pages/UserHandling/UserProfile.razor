@@ -43,25 +43,13 @@ else
 
 @code {
 	//Component is used more or less just to confirm authentication and user informations
-	User? user;
+	User? user = null;
 	string siteMsg = "Loading...";
-	private string? accessToken;
-
-
-
 	protected override async Task OnInitializedAsync()
 	{
-		Logger.LogWarning("Viewing userprofile.");
-
 
 		try
 		{
-			// var scopes = new[] { "User.Read" };
-			// accessToken = await TokenAcquisition.GetAccessTokenForUserAsync(
-			// 	scopes: scopes,
-			// 	authenticationScheme: "OpenIdConnect"
-			// );
-
 			user = await GraphServiceClient.Me.Request().GetAsync();
 		}
 		catch (Exception ex)

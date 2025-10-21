@@ -1,5 +1,4 @@
-﻿using JobHuntLogger.Services.HostedServices;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 
@@ -34,15 +33,15 @@ namespace JobHuntLogger.Utilities.Extensions
 
 					}
 				};
-				
-				
+
+
 			});
 
 			// Prevent the OIDC middleware from overriding token lifetime
 			services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 			{
 				options.UseTokenLifetime = false;
-				
+
 			});
 			services.AddAuthorization();
 			services.AddCascadingAuthenticationState();

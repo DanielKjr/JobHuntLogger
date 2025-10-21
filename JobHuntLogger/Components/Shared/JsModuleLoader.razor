@@ -1,0 +1,18 @@
+﻿@using System.IO
+@inject IJSRuntime JS
+
+@code {
+	[EditorRequired][Parameter] public string JsModuleName { get; set; }
+	protected IJSObjectReference? JsModule;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		var modules = System.IO.Directory.GetFiles("wwwroot/js");
+		if (!JsModuleName.EndsWith(".js"))
+			JsModuleName += ".js";
+		if (modules.Any(m => m.EndsWith(JsModuleName)))
+		{
+			JsModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./js/{JsModuleName}");
+		}
+	}
+}

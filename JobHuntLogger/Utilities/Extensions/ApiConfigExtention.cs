@@ -10,7 +10,7 @@ namespace JobHuntLogger.Utilities.Extensions
 		{
 			
 			string baseUrl = configuration["JobHuntApi:BaseUrl"]!;
-			services.AddTransient<TokenFetcher>();
+			services.AddTransient<TokenFetcherService>();
 			services.AddScoped<ITokenProvider, TokenProvider>();
 			services.AddTransient<BearerTokenHandler>();
 

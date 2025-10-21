@@ -1,12 +1,12 @@
-﻿@inject ILogger<AddNewApplication> Logger
-@inject IJSRuntime JSRuntime
-@attribute [Authorize]
+﻿@using JobHuntLogger.Components.Shared
+@inject ILogger<AddNewApplication> Logger
+@inherits JsModuleLoader  
 
+@attribute [Authorize]
 
 <section aria-labelledby="@legendId">
 	<fieldset>
 		<legend id="@legendId">@Title</legend>
-
 		<div class="mb-2">
 			<label for="@inputId">@Title</label>
 			<InputFile id="@inputId"
@@ -14,7 +14,6 @@
 					   OnChange="LoadFiles"
 					   @attributes="GetInputAttributes()" />
 		</div>
-
 		@if (isLoading)
 		{
 			<div role="status" aria-live="polite" id="@statusId">
@@ -47,19 +46,20 @@
 	private long maxFileSize = 1024 * 1024 * 5; //5mb
 	private bool isLoading;
 	private string? errorMessage;
-	[Parameter] public string Title { get; set; }
 	public string[] PermittedExtensions { get; set; } = new[] { ".pdf" };
+	[EditorRequired][Parameter] public string Title { get; set; }
 	[Parameter] public EventCallback<(string Name, string ContentType, byte[] Data)> OnFileUploaded { get; set; }
 	[Parameter] public EventCallback OnFileRemoved { get; set; }
+
 	private string inputId = $"upload_{Guid.NewGuid():N}";
 	private string? uploadedFileName;
-
 	// Accessibility IDs
 	private string errorId => $"{inputId}_error";
 	private string statusId => $"{inputId}_status";
 	private string successId => $"{inputId}_success";
 	private string legendId => $"{inputId}_legend";
 	private string successHeadingId => $"{inputId}_success_heading";
+
 
 	private IDictionary<string, object> GetInputAttributes()
 	{
@@ -97,7 +97,6 @@
 			StateHasChanged();
 			return;
 		}
-
 		try
 		{
 			//to be used later
@@ -121,8 +120,14 @@
 	private async Task RemoveFile()
 	{
 		uploadedFileName = null;
-		await JSRuntime.InvokeVoidAsync("fileInputInterop.clearFileInput", inputId);
-		await OnFileRemoved.InvokeAsync();
-		StateHasChanged();
+		if (JsModule is not null)
+		{
+			await JsModule.InvokeVoidAsync("clearFileInput", inputId);
+
+			await OnFileRemoved.InvokeAsync();
+			StateHasChanged();
+
+		}
+
 	}
 }

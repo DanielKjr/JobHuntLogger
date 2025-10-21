@@ -22,13 +22,13 @@ namespace JobHuntLoggerTests.Setups
 			var configurationMock = new Mock<IConfiguration>();
 			var apiClientMock = new Mock<JobHuntApiClient>("http://dummy", new HttpClient());
 
-			var jobHuntApiService = new TokenFetcher(
+			var jobHuntApiService = new TokenFetcherService(
 				tokenAcquisitionMock.Object,
 				httpClientFactoryMock.Object,
 				configurationMock.Object,
 				apiClientMock.Object
 			);
-			Services.AddSingleton<TokenFetcher>(jobHuntApiService);
+			Services.AddSingleton<TokenFetcherService>(jobHuntApiService);
 		}
 
 		public static void RegisterUnauthorizedSetup(IServiceCollection Services)

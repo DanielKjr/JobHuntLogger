@@ -1,8 +1,9 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using JobHuntLogger.Components.Shared
+@inject NavigationManager NavigationManager
 @inject AuthenticationService AuthenticationService
-@inject TokenFetcher JobHuntApiService
-@inject IJSRuntime JS
+@inject TokenFetcherService JobHuntApiService
 @inject IToastService toastService
+@inherits JsModuleLoader
 
 <div class="login-or-out-container">
 	<AuthorizeView>
@@ -14,7 +15,6 @@
 		<Authorized>
 			<div class="user-actions">
 				<div class="name" @onclick="CopyTokenToClipboard" style="cursor:pointer;" title="Copy token">@userName</div>
-				@* <button class="btn btn-info" @onclick="@(() => toastService.ShowInfo("Token copied!"))">Info Toast</button> *@
 				<button class="b1" @onclick="@(() => NavigationManager.NavigateTo("/Account/LogOut", forceLoad: true))">Logout</button>
 			</div>
 		</Authorized>
@@ -36,18 +36,20 @@
 	protected override async Task OnInitializedAsync()
 	{
 		userName = await AuthenticationService.GetUserNameAsync();
-
 	}
-
-
-
 
 	private async Task CopyTokenToClipboard()
 	{
 		var token = await JobHuntApiService.GetToken();
-		await JS.InvokeVoidAsync("copyTextToClipboard", token);
-		// showCopied = true;
-		toastService.ShowSuccess("Token copied to clipboard!");
+		if (JsModule is not null)
+		{
+			bool success = await JsModule.InvokeAsync<bool>("copyTextToClipboard", token);
+
+			if (success)
+				toastService.ShowSuccess("Token copied to clipboard!");
+			else
+				toastService.ShowError("Failed to copy token to clipboard.");
+		}
 		StateHasChanged();
 		await Task.Delay(3000);
 	}
