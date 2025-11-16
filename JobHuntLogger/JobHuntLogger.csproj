@@ -7,13 +7,13 @@
 	  <RazorLangVersion>Latest</RazorLangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Remove="JobHuntApi.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="JobHuntApi.json" ClassName="JobHuntApiClient" Namespace="JobHuntApiService" />
-  </ItemGroup>
+    <None Include="JobHuntApi.json" ClassName="JobHuntApiClient" Options="/GenerateNullableReferenceTypes:true" />
+  </ItemGroup>-->
 
 
   <ItemGroup>
@@ -46,6 +46,13 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <OpenApiReference Include="OpenAPIs\swagger.json" Namespace="JobHuntApiService" ClassName="JobHuntApiClient">
+      <SourceUri>http://localhost:8160/swagger/v1/swagger.json</SourceUri>
+    </OpenApiReference>
   </ItemGroup>
 
 </Project>

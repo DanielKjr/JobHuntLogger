@@ -22,14 +22,11 @@ namespace JobHuntAPI.Model
 
 		public DateTime AppliedDate { get; set; }
 
+		public DateTime? Deadline { get; set; }
 		public DateTime ReplyDate { get; set; }
 
-		
-		public PdfFile EncryptedApplicationPdf { get; set; } 
+		public ICollection<PdfFile> PdfFiles { get; set; } = new List<PdfFile>();
 
-		public PdfFile EncryptedResumePdf { get; set; }
-
-		//public JobApplication() => AppliedDate = DateTime.Now;
 
 	}
 }

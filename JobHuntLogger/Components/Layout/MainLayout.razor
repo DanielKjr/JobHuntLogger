@@ -1,29 +1,33 @@
 @using Blazored.Toast.Configuration;
+@using JobHuntLogger.Services;
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject AuthenticationService AuthenticationService
 
 
-<div class="page">
-	@if (_drawerOpen)
-	{
-		<nav class="sidebar">
-			<NavMenu />
-		</nav>
+<CascadingValue Value="AuthenticationService">
+	<div class="page">
+		@if (_drawerOpen)
+		{
+			<nav class="sidebar">
+				<NavMenu />
+			</nav>
 
-	}
+		}
 
-	<main>
-		<header class="top-row auth">
+		<main>
+			<header class="top-row auth">
 				<button title="Hide menu" class="navbar-toggler" @onclick="DrawerToggle">            </button>
-				<LoginOrOut JsModuleName="clipboardModule"/>
-		</header>
+				<LoginOrOut JsModuleName="clipboardModule" />
+			</header>
 
 
-		<article class="content px-4">
-			@Body
-		</article>
-	</main>
-</div>
+			<article class="content px-4">
+				@Body
+			</article>
+		</main>
+	</div>
+</CascadingValue>
 <BlazoredToasts Position="ToastPosition.BottomRight" Timeout="3" />
 
 <div id="blazor-error-ui">

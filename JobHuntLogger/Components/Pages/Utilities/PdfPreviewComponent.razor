@@ -1,0 +1,38 @@
+﻿@using Microsoft.JSInterop
+@using System.Threading.Tasks
+@inherits JsModuleLoader
+@inject JobHuntApiClient JobHuntApiClient
+
+<body>
+	<embed @ref="iframeRef" id="@FrameId" class="pdfPreview" />
+</body>
+
+
+@code {
+	[Parameter] public PdfRequestDto RequestDto { get; set; }
+	private ElementReference iframeRef;
+	private string FrameId { get; } = $"pdf_{Guid.NewGuid():N}";
+	private PdfFile pdfFile;
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await base.OnAfterRenderAsync(firstRender);
+
+		if (firstRender)
+		{
+			//First render skips the rest to ensure the iframe is correctly craeted
+			StateHasChanged();
+			return;
+		}
+
+
+		if (JsModule != null && !firstRender)
+		{
+			pdfFile = await JobHuntApiClient.PdfAsync(RequestDto);
+			// Set iframe src via JS module
+			await JsModule.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(pdfFile.Content));
+
+		}
+	}
+}

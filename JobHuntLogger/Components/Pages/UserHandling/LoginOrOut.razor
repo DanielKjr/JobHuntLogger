@@ -1,4 +1,5 @@
 ﻿@using JobHuntLogger.Components.Shared
+@using JobHuntLogger.Services
 @inject NavigationManager NavigationManager
 @inject AuthenticationService AuthenticationService
 @inject TokenFetcherService JobHuntApiService
@@ -30,12 +31,15 @@
 
 
 @code {
-	//TODO move fetching of user somewhere it is accessible for other components @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+	// Prefer cascaded AuthenticationService when present so other components can consume the same instance
+	[CascadingParameter] public AuthenticationService? CascadedAuthenticationService { get; set; }
 
 	private string userName = "Guest";
+
 	protected override async Task OnInitializedAsync()
 	{
-		userName = await AuthenticationService.GetUserNameAsync();
+		var auth = CascadedAuthenticationService ?? AuthenticationService;
+		userName = await auth.GetUserNameAsync();
 	}
 
 	private async Task CopyTokenToClipboard()

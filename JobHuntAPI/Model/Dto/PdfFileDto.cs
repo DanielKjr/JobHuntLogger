@@ -2,8 +2,8 @@
 {
 	public class PdfFileDto
 	{
-		public required string FileName { get; set; } = string.Empty;
-		public required byte[] Content { get; set; } = Array.Empty<byte>();
-		public required string ContentType { get; set; } = string.Empty;
+		public  string FileName { get; set; } = string.Empty;
+		public  byte[] Content { get; set; } = Array.Empty<byte>();
+		public  string ContentType { get; set; } = string.Empty;
 	}
 }

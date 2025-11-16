@@ -1,10 +1,10 @@
 ﻿@page "/new"
-@using JobHuntApiService
+
 @using Microsoft.AspNetCore.Components.Forms;
+@using System.Diagnostics
 @inject JobHuntApiClient JobHuntApiClient
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject ILogger<AddNewApplication> Logger
-
 
 
 
@@ -82,12 +82,13 @@
 
 @code {
 	public NewJobApplicationDto appDto = new NewJobApplicationDto();
-	
-	[CascadingParameter]
-	public User User { get; set; }
 
+	[CascadingParameter] public AuthenticationService? CascadedAuthenticationService { get; set; }
+
+	private Guid userId;
 	protected override void OnInitialized()
 	{
+
 		appDto.Date = DateTime.Now;
 		appDto.Deadline = DateTime.Now.AddMonths(1);
 		base.OnInitialized();
@@ -136,9 +137,20 @@
 		{
 			//temporary, I want the user instance to be available somewhere in the
 			// cascading params
-			var user = await GraphServiceClient.Me.Request().GetAsync();
-			appDto.UserId = Guid.Parse(user.Id);
-			await JobHuntApiClient.NewAsync(appDto);
+			var maybeUserId = await CascadedAuthenticationService.GetUserIdAsync();
+			if (maybeUserId is null)
+			{
+				Logger.LogWarning("Unable to determine Graph user id for the signed-in user. Aborting submit.");
+				return;
+			}
+			else
+			{
+
+				appDto.UserId = (Guid)maybeUserId;
+				await JobHuntApiClient.NewAsync(appDto);
+			}
+			// var user = await GraphServiceClient.Me.Request().GetAsync();
+			// await JobHuntApiClient.NewAsync(appDto);
 		}
 		catch (Exception e)
 		{

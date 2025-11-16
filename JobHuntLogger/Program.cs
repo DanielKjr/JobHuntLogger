@@ -31,6 +31,7 @@ builder.Services.AddBlazoredToast();
 //.AddJsonFile("/run/secrets/dbinfo", optional: true, reloadOnChange: true);
 builder.Services.AddHttpContextAccessor();
 
+
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddHttpClient();
 

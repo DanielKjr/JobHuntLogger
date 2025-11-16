@@ -50,6 +50,8 @@ namespace JobHuntAPI.Services
 			using var decryptor = aes.CreateDecryptor();
 			return new PdfFile()
 			{
+				PdfFileId = encryptedPdf.PdfFileId,
+				JobApplicationId = encryptedPdf.JobApplicationId,
 				FileName = encryptedPdf.FileName,
 				ContentType = encryptedPdf.ContentType,
 				Content = decryptor.TransformFinalBlock(data, 0, data.Length)

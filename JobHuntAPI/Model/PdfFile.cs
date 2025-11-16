@@ -8,8 +8,12 @@ namespace JobHuntAPI.Model
 	{
 		[Key]
 		public Guid PdfFileId { get; set; }
+
 		[ForeignKey("JobApplicationId")]
 		public Guid JobApplicationId { get; set; }
+
+		[Required]
+		public PdfType PdfType { get; set; }
 
 		public string FileName { get; set; } = string.Empty;
 		public byte[] Content { get; set; } = Array.Empty<byte>();

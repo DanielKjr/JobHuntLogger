@@ -14,17 +14,29 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewJobApplicationDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/NewJobApplicationDto"
+                  }
+                ]
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewJobApplicationDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/NewJobApplicationDto"
+                  }
+                ]
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/NewJobApplicationDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/NewJobApplicationDto"
+                  }
+                ]
               }
             }
           }
@@ -226,17 +238,29 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                  }
+                ]
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                  }
+                ]
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                  }
+                ]
               }
             }
           }
@@ -316,6 +340,66 @@
           }
         }
       }
+    },
+    "/pdf": {
+      "post": {
+        "tags": [
+          "Pdf"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PdfRequestDto"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PdfRequestDto"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PdfRequestDto"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfFile"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfFile"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfFile"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -333,18 +417,26 @@
             "format": "uuid"
           },
           "jobTitle": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "company": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "applicationPdf": {
-            "$ref": "#/components/schemas/PdfFile"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfFile"
+              }
+            ],
+            "nullable": true
           },
           "resumePdf": {
-            "$ref": "#/components/schemas/PdfFile"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfFile"
+              }
+            ],
+            "nullable": true
           },
           "appliedDate": {
             "type": "string",
@@ -372,20 +464,28 @@
           "jobTitle": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "company": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "applicationPdf": {
-            "$ref": "#/components/schemas/PdfFileDto"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfFileDto"
+              }
+            ],
+            "nullable": true
           },
           "resumePdf": {
-            "$ref": "#/components/schemas/PdfFileDto"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfFileDto"
+              }
+            ],
+            "nullable": true
           },
           "date": {
             "type": "string",
@@ -413,44 +513,51 @@
             "format": "uuid"
           },
           "pdfType": {
-            "$ref": "#/components/schemas/PdfType"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfType"
+              }
+            ]
           },
           "fileName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "content": {
             "type": "string",
-            "format": "byte",
-            "nullable": true
+            "format": "byte"
           },
           "contentType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
       },
       "PdfFileDto": {
-        "required": [
-          "content",
-          "contentType",
-          "fileName"
-        ],
         "type": "object",
         "properties": {
           "fileName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "content": {
             "type": "string",
-            "format": "byte",
-            "nullable": true
+            "format": "byte"
           },
           "contentType": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PdfRequestDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
+          },
+          "pdfId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "additionalProperties": false
@@ -474,7 +581,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ]
 }

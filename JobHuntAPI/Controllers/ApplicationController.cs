@@ -58,6 +58,7 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpGet("all")]
+		[ProducesResponseType(typeof(IEnumerable<JobApplicationDisplayDto>), 200)]
 		public async Task<IActionResult> GetAllForUser([FromQuery] Guid userId)
 		{
 			try

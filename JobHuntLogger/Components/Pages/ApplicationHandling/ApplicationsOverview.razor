@@ -1,0 +1,32 @@
+﻿@using JobHuntApiService
+@using JobHuntLogger.Components.Pages.Utilities
+@inject ILogger<ApplicationsOverview> Logger
+@inject JobHuntApiClient JobHuntApiClient
+@inject AuthenticationService AuthenticationService
+@page "/applications"
+
+@attribute [Authorize]
+
+@if(JobApplications != null && JobApplications.Count > 0)
+{
+	<PdfPreviewComponent JsModuleName="pdfModule" RequestDto="Dto"></PdfPreviewComponent>
+}
+
+@code {
+
+
+	public List<JobApplicationDisplayDto> JobApplications { get; set; }
+	private PdfRequestDto Dto;
+
+	protected async override Task OnInitializedAsync()  
+	{
+		Guid? userId = await AuthenticationService.GetUserIdAsync();
+		var apps = await JobHuntApiClient.AllAsync(userId);
+
+		if(apps != null)
+		{
+			JobApplications = new List<JobApplicationDisplayDto>(apps);
+			Dto = new PdfRequestDto() { UserId = (Guid)userId, PdfId = JobApplications.First().ApplicationPdf.PdfFileId };
+		}
+	}
+}

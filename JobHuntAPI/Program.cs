@@ -4,21 +4,29 @@ using JobHuntAPI.Services;
 using JobHuntAPI.Services.Interfaces;
 using JobHuntAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Core;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region swaggerConfig
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddJsonOptions(o =>
+	{
+		o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
 
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobHuntAPI", Version = "v1" });
-
+	//kept in case I want to retry required props on the dtos
+	//c.SupportNonNullableReferenceTypes();
+	//c.UseAllOfToExtendReferenceSchemas();
 	// Add JWT Bearer token support for Swagger UI
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
@@ -48,9 +56,11 @@ builder.Services.AddSwaggerGen(c =>
 #endregion
 
 builder.Services.AddScopedAsyncRepository<ApplicationContext>();
+builder.Services.AddScopedRepository<ApplicationContext>();
 builder.Services.AddDbContextFactory<ApplicationContext>();
-
+builder.Services.AddTransient<IDesignTimeDbContextFactory<ApplicationContext>, ApplicationContextFactory>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 #region dockerConfigs
 builder.Configuration
