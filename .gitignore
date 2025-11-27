@@ -373,3 +373,4 @@ JobHuntLogger/Properties/serviceDependencies.local.json
 /docker/secrets
 JobHuntLogger/appsettings.Development.json
 /dataprotection-keys
+/.idea

@@ -11,7 +11,6 @@ namespace JobHuntLogger.Services.HostedServices
 		{
 			while(!stoppingToken.IsCancellationRequested)
 			{
-				_logger.LogWarning("Starting token cache cleanup");
 				try
 				{
 					await CleanupExpiredEntriesAsync(stoppingToken);
@@ -37,7 +36,8 @@ namespace JobHuntLogger.Services.HostedServices
 				CommandType = CommandType.Text
 			};
 			var rows = await cmd.ExecuteNonQueryAsync(ct);
-			_logger.LogWarning("Token cache cleanup removed {Rows} rows", rows);
+			if(rows > 0)
+				_logger.LogWarning("Token cache cleanup removed {Rows} rows", rows);
 		}
 	}
 }

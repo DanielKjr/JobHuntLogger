@@ -1,18 +1,38 @@
 ﻿@using Microsoft.JSInterop
 @using System.Threading.Tasks
+@using System.Text
 @inherits JsModuleLoader
 @inject JobHuntApiClient JobHuntApiClient
 
-<body>
-	<embed @ref="iframeRef" id="@FrameId" class="pdfPreview" />
-</body>
 
-
+@if (loadError)
+{
+	<div class="pdf-error">Unable to display pdf.</div>
+}
+else
+{
+	<div class="resizable">
+		<iframe @ref="iframeRef" id="@FrameId"  />
+	</div>
+}
 @code {
-	[Parameter] public PdfRequestDto RequestDto { get; set; }
 	private ElementReference iframeRef;
 	private string FrameId { get; } = $"pdf_{Guid.NewGuid():N}";
-	private PdfFile pdfFile;
+	[EditorRequired][Parameter] public  PdfFile PdfFile { get; set; }
+	private bool loadError;
+	private bool loaded = false;
+
+	protected override Task OnParametersSetAsync()
+	{
+		if (PdfFile?.Content == null)
+		{
+			loadError = true;
+			return Task.CompletedTask;
+		}
+
+		loadError = !IsValidPdf(PdfFile.Content);
+		return Task.CompletedTask;
+	}
 
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -26,13 +46,34 @@
 			return;
 		}
 
+		if (JsModule is null)
+			return;
 
-		if (JsModule != null && !firstRender)
+		if (PdfFile?.Content == null || !IsValidPdf(PdfFile.Content))
 		{
-			pdfFile = await JobHuntApiClient.PdfAsync(RequestDto);
-			// Set iframe src via JS module
-			await JsModule.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(pdfFile.Content));
+			loadError = true;
+			StateHasChanged();
+			return;
+		}
 
+		loadError = false;
+		// Set iframe src via JS module
+		if (!loaded)
+		{
+			loaded = true;
+			await JsModule.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
 		}
 	}
+
+	private bool IsValidPdf(byte[] data)
+	{
+		if (data == null || data.Length < 5)
+			return false;
+
+		return Encoding.ASCII.GetString(data.AsSpan(0, 5)) == "%PDF-";
+	}
+
+
+
+
 }

@@ -11,6 +11,9 @@ namespace JobHuntAPI.Services
 	public class ApplicationService(IAsyncRepository<ApplicationContext> _applicationContext, IConfiguration _configuration) : IApplicationService
 	{
 		private readonly string _secret = _configuration["ApiConfig:Secret"] ?? throw new ArgumentNullException("Secret not found in configuration");
+		private Dictionary<string, object> _cache = new();
+
+
 		public async Task AddNewAsync(NewJobApplicationDto dto)
 		{
 			string userId = dto.UserId.ToString();
@@ -75,34 +78,82 @@ namespace JobHuntAPI.Services
 			await _applicationContext.RemoveItems<JobApplication>(q => q.Where(i => i.UserId == userId && ids.Contains(i.JobApplicationId)));
 		}
 
+		//public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
+		//{
+		//	List<T> results = new List<T>();
+		//	var applications = await _applicationContext.GetAllItems<JobApplication>(q => q.Where(i => i.UserId == userId).Include(p => p.PdfFiles));
+		//	foreach (var app in applications)
+		//	{
+		//		T dto = Activator.CreateInstance<T>();
+
+		//		dto.JobApplicationId = app.JobApplicationId;
+		//		dto.JobTitle = app.JobTitle;
+		//		dto.Company = app.Company;
+		//		dto.AppliedDate = app.AppliedDate;
+		//		dto.ReplyDate = app.ReplyDate;
+		//		var application = app.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
+
+		//		if (application is not null)
+		//			dto.ApplicationPdf = PDFEncryptionHelper.DecryptPdf(application, userId.ToString(), _secret);
+		//		else
+		//			dto.ApplicationPdf = null;
+
+		//		var resume = app.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
+		//		if (resume is not null)
+		//			dto.ResumePdf = PDFEncryptionHelper.DecryptPdf(resume, userId.ToString(), _secret);
+		//		else
+		//			dto.ResumePdf = null;
+		//		results.Add(dto);
+		//	}
+		//	return results;
+		//}
+
+		//With temporary cache
 		public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
 		{
-			List<T> results = new List<T>();
-			var applications = await _applicationContext.GetAllItems<JobApplication>(q => q.Where(i => i.UserId == userId).Include(p => p.PdfFiles));
-			foreach (var app in applications)
+			string cacheKey = $"apps:{userId}";
+
+			if (_cache.TryGetValue(cacheKey, out var cached))
+			{
+
+				return (IEnumerable<T>)cached;
+			}
+
+			var results = new List<T>();
+
+			var apps = await _applicationContext
+				.GetAllItems<JobApplication>(
+					q => q.Where(i => i.UserId == userId)
+						  .Include(p => p.PdfFiles));
+
+			foreach (var app in apps)
 			{
 				T dto = Activator.CreateInstance<T>();
-			
+
 				dto.JobApplicationId = app.JobApplicationId;
 				dto.JobTitle = app.JobTitle;
 				dto.Company = app.Company;
 				dto.AppliedDate = app.AppliedDate;
 				dto.ReplyDate = app.ReplyDate;
-				var application = app.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 
+				var application = app.PdfFiles.FirstOrDefault(i => i.PdfType == PdfType.Application);
 				if (application is not null)
 					dto.ApplicationPdf = PDFEncryptionHelper.DecryptPdf(application, userId.ToString(), _secret);
 				else
 					dto.ApplicationPdf = null;
-				
-				var resume = app.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
+
+				var resume = app.PdfFiles.FirstOrDefault(i => i.PdfType == PdfType.Resume);
 				if (resume is not null)
 					dto.ResumePdf = PDFEncryptionHelper.DecryptPdf(resume, userId.ToString(), _secret);
 				else
 					dto.ResumePdf = null;
 
-					results.Add(dto);
+				results.Add(dto);
 			}
+
+			_cache[cacheKey] = results;
+
+
 			return results;
 		}
 		//Experimental using the new() functionality
@@ -110,9 +161,9 @@ namespace JobHuntAPI.Services
 		{
 			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == id).Include(p => p.PdfFiles));
 			var application = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
-		
+
 			var resume = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
-		
+
 			return entry == null ? null : new T()
 			{
 				JobApplicationId = entry.JobApplicationId,
@@ -138,11 +189,11 @@ namespace JobHuntAPI.Services
 			string userIdString = userId.ToString();
 			// Decrypt existing files for comparison
 			var applicationPdfEntry = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
-			if(applicationPdfEntry is not null)
+			if (applicationPdfEntry is not null)
 			{
 				var existingAppPdf = PDFEncryptionHelper.DecryptPdf(applicationPdfEntry, userIdString, _secret);
 				// Only update if the file has changed
-				if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf.Content, existingAppPdf.Content))
+				if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf!.Content, existingAppPdf.Content))
 					applicationPdfEntry = PDFEncryptionHelper.EncryptPdf(application.ApplicationPdf, userIdString, _secret);
 			}
 			var entryResumePdf = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
@@ -152,7 +203,7 @@ namespace JobHuntAPI.Services
 
 
 
-				if (PDFEncryptionHelper.IsFileChanged(application.ResumePdf.Content, existingResumePdf.Content))
+				if (PDFEncryptionHelper.IsFileChanged(application.ResumePdf!.Content, existingResumePdf.Content))
 					entryResumePdf = PDFEncryptionHelper.EncryptPdf(application.ResumePdf, userIdString, _secret);
 
 			}

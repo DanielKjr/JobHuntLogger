@@ -55,12 +55,18 @@ builder.Services.AddSwaggerGen(c =>
 });
 #endregion
 
-builder.Services.AddScopedAsyncRepository<ApplicationContext>();
-builder.Services.AddScopedRepository<ApplicationContext>();
+//singletons to fit with applicationservice for caching
+builder.Services.AddSingletonAsyncRepository<ApplicationContext>();
+builder.Services.AddSingletonRepository<ApplicationContext>();
+
 builder.Services.AddDbContextFactory<ApplicationContext>();
 builder.Services.AddTransient<IDesignTimeDbContextFactory<ApplicationContext>, ApplicationContextFactory>();
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+
+//TODO remove this later, used for caching during development
+builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+
+//builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 #region dockerConfigs
 builder.Configuration
