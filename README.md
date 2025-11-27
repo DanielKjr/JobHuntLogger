@@ -21,13 +21,18 @@ Currently containing:
 
 
 Blazor front-end:
-- [ ] Upload PDF files to server
-- [ ] Preview applications in the app
+- [x] Upload PDF files to server
+- [x] Preview applications in the app
 - [ ] Show statistics such as how many has replied, response times
-- [x] Anti forgery (is on by default so easy check) 
+- [x] Anti forgery (is on by default so easy check)
+- [x] Automatically gets Bearer token and inserts into HTTPClient requests
 
 ASP.NET Back-end:
-- [ ] Use the Graph(entra) user Id as relation to applications.
-- [ ] Store applications in EF database.
-- [ ] Encrypt
+- [x] Use the Graph(entra) user Id as relation to applications.
+- [x] Store applications in EF database.
+- [x] Encrypt & Decrypt (AES + SHA256)
 - [x] Access token validation with Entra specified scope
+- [ ] Ensure files are updated correctly.
+- [x] Cache for development purposes.
+- [x] Bearer tokens used to validate requests.
+- [x] Validate tokens in swagger
