@@ -33,11 +33,11 @@
 @code {
 	// Prefer cascaded AuthenticationService when present so other components can consume the same instance
 	[CascadingParameter] public AuthenticationService? CascadedAuthenticationService { get; set; }
-
 	private string userName = "Guest";
 
 	protected override async Task OnInitializedAsync()
 	{
+		SetModules(ModuleType.ClipBoardModule);
 		var auth = CascadedAuthenticationService ?? AuthenticationService;
 		userName = await auth.GetUserNameAsync();
 	}
@@ -45,9 +45,9 @@
 	private async Task CopyTokenToClipboard()
 	{
 		var token = await JobHuntApiService.GetToken();
-		if (JsModule is not null)
+		if (JsModules is not null)
 		{
-			bool success = await JsModule.InvokeAsync<bool>("copyTextToClipboard", token);
+			bool success = await JsModules[(int)ModuleType.ClipBoardModule].InvokeAsync<bool>("copyTextToClipboard", token);
 
 			if (success)
 				toastService.ShowSuccess("Token copied to clipboard!");

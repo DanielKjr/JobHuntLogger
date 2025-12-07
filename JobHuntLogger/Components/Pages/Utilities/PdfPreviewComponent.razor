@@ -7,23 +7,25 @@
 
 @if (loadError)
 {
-	<div class="pdf-error">Unable to display pdf.</div>
+	<div class="pdf-error">@errorMessage</div>
 }
 else
 {
 	<div class="resizable">
-		<iframe @ref="iframeRef" id="@FrameId"  />
+		<iframe @ref="iframeRef" id="@FrameId"></iframe>
 	</div>
 }
 @code {
 	private ElementReference iframeRef;
 	private string FrameId { get; } = $"pdf_{Guid.NewGuid():N}";
-	[EditorRequired][Parameter] public  PdfFile PdfFile { get; set; }
+	[EditorRequired][Parameter] public PdfFile PdfFile { get; set; }
 	private bool loadError;
 	private bool loaded = false;
 
+	private string errorMessage = "Unable to display pdf.";
 	protected override Task OnParametersSetAsync()
 	{
+		SetModules(ModuleType.PdfModule, ModuleType.BrowserInterop);
 		if (PdfFile?.Content == null)
 		{
 			loadError = true;
@@ -46,7 +48,7 @@ else
 			return;
 		}
 
-		if (JsModule is null)
+		if (JsModules is null)
 			return;
 
 		if (PdfFile?.Content == null || !IsValidPdf(PdfFile.Content))
@@ -61,7 +63,18 @@ else
 		if (!loaded)
 		{
 			loaded = true;
-			await JsModule.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
+			string browser = await JsModules[(int)ModuleType.BrowserInterop].InvokeAsync<string>("getBrowserInfo");
+			if (string.Equals(browser, "firefox", StringComparison.OrdinalIgnoreCase))
+			{
+				errorMessage = $"Unable to display pdf in the active browser.  ({browser})";
+				loadError = true;
+				StateHasChanged();
+			}
+			else
+			{
+				await JsModules[(int)ModuleType.PdfModule].InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
+			}
+		
 		}
 	}
 

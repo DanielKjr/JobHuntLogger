@@ -60,14 +60,14 @@
 			<legend>Attachments</legend>
 			<div class="form-group">
 				<label for="resume">Resume</label>
-				<UploadFile Title="Upload Resume" OnFileUploaded="OnResumeUpload" OnFileRemoved="DeleteResume" JsModuleName="fileInputInteropModule" />
+				<UploadFile Title="Upload Resume" OnFileUploaded="OnResumeUpload" OnFileRemoved="DeleteResume"  />
 				<!-- If UploadFile forwards id/aria attributes, prefer passing id="resume" and aria-describedby="resume-validation" -->
 				<ValidationMessage For="@(() => appDto.ResumePdf)" />
 			</div>
 
 			<div class="form-group">
 				<label for="applicationPdf">Application</label>
-				<UploadFile Title="Upload Application" OnFileUploaded="OnApplicationUpload" OnFileRemoved="DeleteApplication" JsModuleName="fileInputInteropModule" />
+				<UploadFile Title="Upload Application" OnFileUploaded="OnApplicationUpload" OnFileRemoved="DeleteApplication"  />
 				<ValidationMessage For="@(() => appDto.ApplicationPdf)" />
 			</div>
 		</fieldset>

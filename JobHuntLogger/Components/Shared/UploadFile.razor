@@ -1,7 +1,6 @@
 ﻿@using JobHuntLogger.Components.Pages.ApplicationHandling
-@using JobHuntLogger.Components.Shared
 @inject ILogger<AddNewApplication> Logger
-@inherits JsModuleLoader  
+@inherits JsModuleLoader
 
 @attribute [Authorize]
 
@@ -61,7 +60,10 @@
 	private string legendId => $"{inputId}_legend";
 	private string successHeadingId => $"{inputId}_success_heading";
 
-
+	protected override void OnInitialized()
+	{
+		SetModules([ModuleType.FileInputInterop]);
+	}
 	private IDictionary<string, object> GetInputAttributes()
 	{
 		var attributes = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
@@ -121,9 +123,10 @@
 	private async Task RemoveFile()
 	{
 		uploadedFileName = null;
-		if (JsModule is not null)
+
+		if (JsModules is not null)
 		{
-			await JsModule.InvokeVoidAsync("clearFileInput", inputId);
+			await JsModules[(int)ModuleType.FileInputInterop].InvokeVoidAsync("clearFileInput", inputId);
 
 			await OnFileRemoved.InvokeAsync();
 			StateHasChanged();

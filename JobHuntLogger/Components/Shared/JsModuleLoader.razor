@@ -1,12 +1,24 @@
-﻿@using System.IO
+﻿@* @using System.IO
 @inject IJSRuntime JS
 
 @code {
-	[EditorRequired][Parameter] public string JsModuleName { get; set; }
+	[EditorRequired][Parameter] public string[] JsModuleNames { get; set; }
+
 	protected IJSObjectReference? JsModule;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		JsModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./js/{JsModuleName}.js");
+		if (!firstRender)
+			return;
+		var loader = await JS.InvokeAsync<IJSObjectReference>("import", "./js/loader.js");
+
+		JsModule = await loader.InvokeAsync<IJSObjectReference>(
+			"loadModules",
+			JsModuleNames
+		);
+		// JsModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./js/{JsModuleNames}.js");
 	}
+
+
 }
+ *@

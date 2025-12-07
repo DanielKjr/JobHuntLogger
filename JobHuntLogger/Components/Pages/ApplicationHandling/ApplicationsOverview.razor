@@ -8,7 +8,7 @@
 
 @if (JobApplications != null && JobApplications.Any())
 {
-	@* <PdfPreviewComponent JsModuleName="pdfModule" PdfFile="JobApplications.First().ApplicationPdf"></PdfPreviewComponent> *@
+	<PdfPreviewComponent  PdfFile="JobApplications.First().ApplicationPdf"></PdfPreviewComponent> 
 	<QuickGrid Items="@JobApplications">
 		@for (int i = 0; i < Props.Length; i++)
 		{
@@ -27,7 +27,7 @@
 
 	public IQueryable<JobApplicationDisplayDto>? JobApplications { get; set; }
 
-	protected async override Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
 	{
 		Guid? userId = await AuthenticationService.GetUserIdAsync();
 		var apps = await JobHuntApiClient.AllAsync(userId);
