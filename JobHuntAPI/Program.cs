@@ -38,6 +38,8 @@ builder.Services.AddSwaggerGen(c =>
 		BearerFormat = "JWT"
 	});
 
+	//Supposedly fixes the enforcement of no null values, even though the property is nullable
+	c.UseAllOfToExtendReferenceSchemas();
 	c.AddSecurityRequirement(new OpenApiSecurityRequirement
 	{
 		{

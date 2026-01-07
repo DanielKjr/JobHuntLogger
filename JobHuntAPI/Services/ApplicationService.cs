@@ -157,14 +157,15 @@ namespace JobHuntAPI.Services
 			return results;
 		}
 		//Experimental using the new() functionality
-		public async Task<T?> GetByIdAsync<T>(Guid userId, Guid id) where T : JobApplicationDisplayDto, new()
+		public async Task<JobApplicationDisplayDto> GetDisplayDtoById(ApplicationRequestDto dto) 
 		{
-			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == id).Include(p => p.PdfFiles));
+			Guid userId = dto.UserId;
+			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == dto.ApplicationId).Include(p => p.PdfFiles));
 			var application = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 
 			var resume = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
-
-			return entry == null ? null : new T()
+			
+			return new JobApplicationDisplayDto()
 			{
 				JobApplicationId = entry.JobApplicationId,
 				JobTitle = entry.JobTitle,

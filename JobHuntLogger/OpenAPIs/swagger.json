@@ -88,7 +88,7 @@
         }
       }
     },
-    "/Application/all": {
+    "/Application/userApplications": {
       "get": {
         "tags": [
           "Application"
@@ -129,6 +129,66 @@
                   "items": {
                     "$ref": "#/components/schemas/JobApplicationDisplayDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Application/application": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ApplicationRequestDto"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ApplicationRequestDto"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ApplicationRequestDto"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplicationDisplayDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplicationDisplayDto"
                 }
               }
             }
@@ -404,6 +464,20 @@
   },
   "components": {
     "schemas": {
+      "ApplicationRequestDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "applicationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "JobApplicationDisplayDto": {
         "required": [
           "company",
@@ -417,10 +491,12 @@
             "format": "uuid"
           },
           "jobTitle": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "company": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "applicationPdf": {
             "allOf": [
@@ -464,12 +540,14 @@
           "jobTitle": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "company": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "applicationPdf": {
             "allOf": [
@@ -520,14 +598,17 @@
             ]
           },
           "fileName": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "content": {
             "type": "string",
-            "format": "byte"
+            "format": "byte",
+            "nullable": true
           },
           "contentType": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -536,14 +617,17 @@
         "type": "object",
         "properties": {
           "fileName": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "content": {
             "type": "string",
-            "format": "byte"
+            "format": "byte",
+            "nullable": true
           },
           "contentType": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

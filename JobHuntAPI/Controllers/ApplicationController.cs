@@ -57,7 +57,7 @@ namespace JobHuntAPI.Controllers
 			}
 		}
 
-		[HttpGet("all")]
+		[HttpGet("userApplications")]
 		[ProducesResponseType(typeof(IEnumerable<JobApplicationDisplayDto>), 200)]
 		public async Task<IActionResult> GetAllForUser([FromQuery] Guid userId)
 		{
@@ -70,6 +70,26 @@ namespace JobHuntAPI.Controllers
 				return Ok(items);
 			}
 			catch (ArgumentException ex)
+			{
+				return BadRequest(new { error = ex.Message });
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { error = "An unexpected error occurred.", details = ex.Message });
+			}
+		}
+
+		[HttpGet("application")]
+		[ProducesResponseType(typeof(JobApplicationDisplayDto), 200)]
+		public async Task<IActionResult> GetApplicationById([FromBody]ApplicationRequestDto dto)
+		{
+			try
+			{
+				var application = await _applicationService.GetDisplayDtoById(dto);
+				if (application == null) return NotFound();
+				return Ok(application);
+			}
+			catch(ArgumentException ex)
 			{
 				return BadRequest(new { error = ex.Message });
 			}

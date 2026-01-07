@@ -14,6 +14,6 @@ namespace JobHuntAPI.Services.Interfaces
 		Task UpdateApplicationAsync<T>(Guid userId, T application) where T : JobApplicationDisplayDto;
 		Task UpdateApplicationAsync<T>(Guid userId, IEnumerable<T> application) where T : JobApplicationDisplayDto;
 		Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto;
-		Task<T?> GetByIdAsync<T>(Guid userId, Guid id) where T : JobApplicationDisplayDto, new();
+		Task<JobApplicationDisplayDto> GetDisplayDtoById(ApplicationRequestDto dto);
 	}
 }

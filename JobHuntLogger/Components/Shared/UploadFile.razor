@@ -1,5 +1,5 @@
 ﻿@using JobHuntLogger.Components.Pages.ApplicationHandling
-@inject ILogger<AddNewApplication> Logger
+@inject ILogger<UploadFile> Logger
 @inherits JsModuleLoader
 
 @attribute [Authorize]
@@ -50,6 +50,7 @@
 	[EditorRequired][Parameter] public string Title { get; set; }
 	[Parameter] public EventCallback<(string Name, string ContentType, byte[] Data)> OnFileUploaded { get; set; }
 	[Parameter] public EventCallback OnFileRemoved { get; set; }
+	[Parameter] public PdfFile? Dto { get; set; }
 
 	private string inputId = $"upload_{Guid.NewGuid():N}";
 	private string? uploadedFileName;
@@ -60,9 +61,14 @@
 	private string legendId => $"{inputId}_legend";
 	private string successHeadingId => $"{inputId}_success_heading";
 
-	protected override void OnInitialized()
+	protected override async void OnInitialized()
 	{
 		SetModules([ModuleType.FileInputInterop]);
+		if(Dto != null)
+		{
+			uploadedFileName = Dto.FileName;
+			// await OnFileUploaded.InvokeAsync((Dto.FileName, Dto.ContentType, Dto.Content));
+		}
 	}
 	private IDictionary<string, object> GetInputAttributes()
 	{

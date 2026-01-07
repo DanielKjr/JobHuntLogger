@@ -17,6 +17,17 @@
 
 			<PropertyColumn Property="@(app => getter(app))" Title="@prop.Name"></PropertyColumn>
 		}
+	<TemplateColumn Title="AppId">
+    @context.JobApplicationId
+    <div>
+        <a class="nav-link"
+           href="@($"/application/edit/{context.JobApplicationId}")">
+            Edit
+        </a>
+    </div>
+</TemplateColumn>
+
+	
 	</QuickGrid>
 
 }
@@ -30,7 +41,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		Guid? userId = await AuthenticationService.GetUserIdAsync();
-		var apps = await JobHuntApiClient.AllAsync(userId);
+		var apps = await JobHuntApiClient.UserApplicationsAsync(userId);
 
 		if (apps != null)
 		{
