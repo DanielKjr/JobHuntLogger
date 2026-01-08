@@ -1,6 +1,6 @@
 ﻿@inject ILogger<ApplicationsOverview> Logger
 @inject JobHuntApiClient JobHuntApiClient
-@inject AuthenticationService AuthenticationService
+@inject IAuthenticationService AuthenticationService
 @page "/applications"
 
 @attribute [Authorize]
@@ -41,7 +41,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		
-		var apps = await JobHuntApiClient.UserApplicationsAsync();
+		ICollection<JobApplicationDisplayDto> apps = await JobHuntApiClient.UserApplicationsAsync();
 
 		if (apps != null)
 		{

@@ -89,7 +89,7 @@
 	[Parameter]
 	public Guid? ApplicationId { get; set; }
 
-	[CascadingParameter] public AuthenticationService? CascadedAuthenticationService { get; set; }
+	[CascadingParameter] public IAuthenticationService? CascadedAuthenticationService { get; set; }
 
 
 	//TODO properly display the existing file if it exists
@@ -119,7 +119,7 @@
 
 				appDto.JobTitle = existingDto.JobTitle;
 				appDto.Company = existingDto.Company;
-		
+
 			}
 			StateHasChanged();
 		}
@@ -179,24 +179,9 @@
 			}
 			else
 			{
-				//temporary, I want the user instance to be available somewhere in the
-				// cascading params
-				var maybeUserId = await CascadedAuthenticationService!.GetUserIdAsync();
-				if (maybeUserId is null)
-				{
-					Logger.LogWarning("Unable to determine Graph user id for the signed-in user. Aborting submit.");
-					return;
-				}
-				else
-				{
+				await JobHuntApiClient.NewAsync(appDto);
 
-				
-					await JobHuntApiClient.NewAsync(appDto);
-				}
 			}
-
-			// var user = await GraphServiceClient.Me.Request().GetAsync();
-			// await JobHuntApiClient.NewAsync(appDto);
 		}
 		catch (Exception e)
 		{

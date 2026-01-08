@@ -32,7 +32,7 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddHttpContextAccessor();
 
 
-builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddHttpClient();
 
 //configure logging

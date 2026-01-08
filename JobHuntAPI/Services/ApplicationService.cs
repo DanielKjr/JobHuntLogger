@@ -21,7 +21,9 @@ namespace JobHuntAPI.Services
 			var application = dto.ApplicationPdf is not null
 	? PDFEncryptionHelper.EncryptPdf(dto.ApplicationPdf, userId, _secret)
 	: null!;
+			application.PdfType = PdfType.Application;
 			var resume = dto.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret) : null!;
+			resume.PdfType = PdfType.Resume;
 			JobApplication newApplication = new JobApplication()
 			{
 				UserId = userId,

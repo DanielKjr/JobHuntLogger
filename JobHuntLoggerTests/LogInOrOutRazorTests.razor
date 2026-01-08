@@ -14,7 +14,7 @@
 		ServiceSetups.RegisterJobHuntApi(Services);
 		ServiceSetups.RegisterUnauthorizedSetup(Services);
 		Services.AddSingleton<IToastService, ToastService>();
-
+		JSInterop.SetupModule("./js/clipboardModule.js");
 		TestContext?.AddTestAuthorization();
 
 		// Act
@@ -34,7 +34,7 @@
 	{
 		ServiceSetups.RegisterJobHuntApi(Services);
 		ServiceSetups.RegisterAuthorizedSetup(Services);
-	
+		JSInterop.SetupModule("./js/clipboardModule.js");
 		TestContext?.AddTestAuthorization().SetAuthorized("NameOfUser");
 		Services.AddSingleton<IToastService, ToastService>();
 

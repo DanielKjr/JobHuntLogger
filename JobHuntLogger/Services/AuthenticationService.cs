@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace JobHuntLogger.Services
 {
-	public class AuthenticationService(AuthenticationStateProvider _authenticationStateProvider)
+	public class AuthenticationService(AuthenticationStateProvider _authenticationStateProvider) : IAuthenticationService
 	{
 		public async Task<bool> IsUserAuthenticatedAsync()
 		{

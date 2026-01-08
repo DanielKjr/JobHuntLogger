@@ -1,7 +1,6 @@
-﻿@using JobHuntLogger.Components.Shared
-@using JobHuntLogger.Services
+﻿@using JobHuntLogger.Services
 @inject NavigationManager NavigationManager
-@inject AuthenticationService AuthenticationService
+@inject IAuthenticationService AuthenticationService
 @inject TokenFetcherService JobHuntApiService
 @inject IToastService toastService
 @inherits JsModuleLoader
@@ -32,7 +31,7 @@
 
 @code {
 	// Prefer cascaded AuthenticationService when present so other components can consume the same instance
-	[CascadingParameter] public AuthenticationService? CascadedAuthenticationService { get; set; }
+	[CascadingParameter] public IAuthenticationService? CascadedAuthenticationService { get; set; }
 	private string userName = "Guest";
 
 	protected override async Task OnInitializedAsync()

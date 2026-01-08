@@ -46,7 +46,7 @@ namespace JobHuntLoggerTests.Setups
 			var authenticationService = new AuthenticationService(authenticationStateProviderMock.Object);
 
 			Services.AddSingleton<AuthenticationStateProvider>(authenticationStateProviderMock.Object);
-			Services.AddSingleton<AuthenticationService>(authenticationService);
+			Services.AddSingleton<IAuthenticationService>(authenticationService);
 		}
 
 		public static void RegisterAuthorizedSetup(IServiceCollection Services)
@@ -65,10 +65,10 @@ namespace JobHuntLoggerTests.Setups
 			authenticationStateProviderMock
 				.Setup(m => m.GetAuthenticationStateAsync())
 				.ReturnsAsync(authenticationState);
-
+			
 			var authenticationService = new AuthenticationService(authenticationStateProviderMock.Object);
 			Services.AddSingleton(authenticationStateProviderMock.Object);
-			Services.AddSingleton(authenticationService);
+			Services.AddSingleton<IAuthenticationService>(authenticationService);
 
 		}
 	}
