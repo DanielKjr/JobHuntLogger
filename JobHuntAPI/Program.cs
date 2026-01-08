@@ -68,6 +68,7 @@ builder.Services.AddScoped<IPdfService, PdfService>();
 //TODO remove this later, used for caching during development
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 
+builder.Services.AddTransient<IUserHelper, UserHelper>();
 //builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 #region dockerConfigs

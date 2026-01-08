@@ -1,5 +1,7 @@
-﻿using JobHuntAPI.Model.Dto;
+﻿using System.Security.Claims;
+using JobHuntAPI.Model.Dto;
 using JobHuntAPI.Services.Interfaces;
+using JobHuntAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -10,15 +12,16 @@ namespace JobHuntAPI.Controllers
 	[Authorize]
 	[ApiController]
 	[Route("[controller]")]
-	public class ApplicationController(IApplicationService _applicationService) : ControllerBase
+	public class ApplicationController(IApplicationService _applicationService, IUserHelper userHelper) : ControllerBase
 	{
 
 		[HttpPost("new")]
 		public async Task<IActionResult> AddNew([FromBody] NewJobApplicationDto dto)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
-				await _applicationService.AddNewAsync(dto);
+				await _applicationService.AddNewAsync(userId,dto);
 				return Ok();
 			}
 			catch (ArgumentNullException ex)
@@ -38,9 +41,10 @@ namespace JobHuntAPI.Controllers
 		[HttpPost("new/multiple")]
 		public async Task<IActionResult> AddMultipleNew([FromBody] IEnumerable<NewJobApplicationDto> dtos)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
-				await _applicationService.AddNewAsync(dtos);
+				await _applicationService.AddNewAsync(userId, dtos);
 				return Ok();
 			}
 			catch (ArgumentNullException ex)
@@ -59,11 +63,13 @@ namespace JobHuntAPI.Controllers
 
 		[HttpGet("userApplications")]
 		[ProducesResponseType(typeof(IEnumerable<JobApplicationDisplayDto>), 200)]
-		public async Task<IActionResult> GetAllForUser([FromQuery] Guid userId)
+		public async Task<IActionResult> GetAllForUser()
 		{
+			var userID = userHelper.GetUserId(User);
+		
 			try
 			{
-				var items = await _applicationService.GetAllAsync<JobApplicationDisplayDto>(userId);
+				var items = await _applicationService.GetAllAsync<JobApplicationDisplayDto>(userID);
 				if (items == null || !items.Any())
 					return NotFound(new { error = "No applications found for this user." });
 
@@ -81,11 +87,12 @@ namespace JobHuntAPI.Controllers
 
 		[HttpGet("application")]
 		[ProducesResponseType(typeof(JobApplicationDisplayDto), 200)]
-		public async Task<IActionResult> GetApplicationById([FromBody]ApplicationRequestDto dto)
+		public async Task<IActionResult> GetApplicationById(Guid applicationId)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
-				var application = await _applicationService.GetDisplayDtoById(dto);
+				var application = await _applicationService.GetDisplayDtoById(userId, applicationId);
 				if (application == null) return NotFound();
 				return Ok(application);
 			}
@@ -100,8 +107,9 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpDelete("delete")]
-		public async Task<IActionResult> Delete([FromQuery]Guid userId, [FromQuery]Guid applicationId)
+		public async Task<IActionResult> Delete(Guid applicationId)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
 				await _applicationService.DeleteByIdAsync(userId, applicationId);
@@ -118,8 +126,9 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpDelete("delete/multiple")]
-		public async Task<IActionResult> DeleteMultiple([FromQuery] Guid userId, [FromBody] IEnumerable<Guid> applicationIds)
+		public async Task<IActionResult> DeleteMultiple([FromBody] IEnumerable<Guid> applicationIds)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
 				await _applicationService.DeleteByIdAsync(userId, applicationIds);
@@ -136,8 +145,9 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpPatch("update")]
-		public async Task<IActionResult> Update([FromQuery] Guid userId, [FromBody] JobApplicationDisplayDto dto)
+		public async Task<IActionResult> Update([FromBody] JobApplicationDisplayDto dto)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
 				await _applicationService.UpdateApplicationAsync(userId, dto);
@@ -158,8 +168,9 @@ namespace JobHuntAPI.Controllers
 		}
 
 		[HttpPatch("update/multiple")]
-		public async Task<IActionResult> UpdateMultiple([FromQuery] Guid userId, [FromBody] IEnumerable<JobApplicationDisplayDto> dtos)
+		public async Task<IActionResult> UpdateMultiple([FromBody] IEnumerable<JobApplicationDisplayDto> dtos)
 		{
+			var userId = userHelper.GetUserId(User);
 			try
 			{
 				await _applicationService.UpdateApplicationAsync(userId, dtos);

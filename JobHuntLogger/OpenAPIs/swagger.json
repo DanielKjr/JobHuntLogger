@@ -93,16 +93,6 @@
         "tags": [
           "Application"
         ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -141,37 +131,16 @@
         "tags": [
           "Application"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/ApplicationRequestDto"
-                  }
-                ]
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/ApplicationRequestDto"
-                  }
-                ]
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/ApplicationRequestDto"
-                  }
-                ]
-              }
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -203,14 +172,6 @@
         ],
         "parameters": [
           {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
             "name": "applicationId",
             "in": "query",
             "schema": {
@@ -230,16 +191,6 @@
       "delete": {
         "tags": [
           "Application"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
         ],
         "requestBody": {
           "content": {
@@ -284,16 +235,6 @@
         "tags": [
           "Application"
         ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -336,16 +277,6 @@
       "patch": {
         "tags": [
           "Application"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
         ],
         "requestBody": {
           "content": {
@@ -464,20 +395,6 @@
   },
   "components": {
     "schemas": {
-      "ApplicationRequestDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "applicationId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
       "JobApplicationDisplayDto": {
         "required": [
           "company",
@@ -528,15 +445,10 @@
       "NewJobApplicationDto": {
         "required": [
           "company",
-          "jobTitle",
-          "userId"
+          "jobTitle"
         ],
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "jobTitle": {
             "maxLength": 100,
             "minLength": 3,

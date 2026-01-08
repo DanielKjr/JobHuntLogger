@@ -14,9 +14,9 @@ namespace JobHuntAPI.Services
 		private Dictionary<string, object> _cache = new();
 
 
-		public async Task AddNewAsync(NewJobApplicationDto dto)
+		public async Task AddNewAsync(Guid userId, NewJobApplicationDto dto)
 		{
-			string userId = dto.UserId.ToString();
+			
 
 			var application = dto.ApplicationPdf is not null
 	? PDFEncryptionHelper.EncryptPdf(dto.ApplicationPdf, userId, _secret)
@@ -24,7 +24,7 @@ namespace JobHuntAPI.Services
 			var resume = dto.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret) : null!;
 			JobApplication newApplication = new JobApplication()
 			{
-				UserId = dto.UserId,
+				UserId = userId,
 				JobTitle = dto.JobTitle,
 				Company = dto.Company,
 				AppliedDate = dto.Date,
@@ -39,9 +39,9 @@ namespace JobHuntAPI.Services
 			await _applicationContext.AddItem(newApplication);
 		}
 
-		public async Task AddNewAsync(IEnumerable<NewJobApplicationDto> dtos)
+		public async Task AddNewAsync(Guid userId,IEnumerable<NewJobApplicationDto> dtos)
 		{
-			string userId = dtos.First().UserId.ToString();
+			
 			List<JobApplication> newApplications = new List<JobApplication>();
 			foreach (var item in dtos)
 			{
@@ -51,7 +51,7 @@ namespace JobHuntAPI.Services
 				var resume = item.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(item.ResumePdf, userId, _secret) : null!;
 				JobApplication newApplication = new JobApplication()
 				{
-					UserId = item.UserId,
+					UserId = userId,
 					JobTitle = item.JobTitle,
 					Company = item.Company,
 					AppliedDate = item.Date,
@@ -138,13 +138,13 @@ namespace JobHuntAPI.Services
 
 				var application = app.PdfFiles.FirstOrDefault(i => i.PdfType == PdfType.Application);
 				if (application is not null)
-					dto.ApplicationPdf = PDFEncryptionHelper.DecryptPdf(application, userId.ToString(), _secret);
+					dto.ApplicationPdf = PDFEncryptionHelper.DecryptPdf(application, userId, _secret);
 				else
 					dto.ApplicationPdf = null;
 
 				var resume = app.PdfFiles.FirstOrDefault(i => i.PdfType == PdfType.Resume);
 				if (resume is not null)
-					dto.ResumePdf = PDFEncryptionHelper.DecryptPdf(resume, userId.ToString(), _secret);
+					dto.ResumePdf = PDFEncryptionHelper.DecryptPdf(resume, userId, _secret);
 				else
 					dto.ResumePdf = null;
 
@@ -157,10 +157,10 @@ namespace JobHuntAPI.Services
 			return results;
 		}
 		//Experimental using the new() functionality
-		public async Task<JobApplicationDisplayDto> GetDisplayDtoById(ApplicationRequestDto dto) 
+		public async Task<JobApplicationDisplayDto> GetDisplayDtoById(Guid userId, Guid applicationId) 
 		{
-			Guid userId = dto.UserId;
-			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == dto.ApplicationId).Include(p => p.PdfFiles));
+
+			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == applicationId).Include(p => p.PdfFiles));
 			var application = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 
 			var resume = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
@@ -172,8 +172,8 @@ namespace JobHuntAPI.Services
 				Company = entry.Company,
 				AppliedDate = entry.AppliedDate,
 				ReplyDate = entry.ReplyDate,
-				ApplicationPdf = application is not null ? PDFEncryptionHelper.DecryptPdf(application, userId.ToString(), _secret) : null!,
-				ResumePdf = resume is not null ? PDFEncryptionHelper.DecryptPdf(resume, userId.ToString(), _secret) : null!
+				ApplicationPdf = application is not null ? PDFEncryptionHelper.DecryptPdf(application, userId, _secret) : null!,
+				ResumePdf = resume is not null ? PDFEncryptionHelper.DecryptPdf(resume, userId, _secret) : null!
 			};
 		}
 
@@ -187,25 +187,25 @@ namespace JobHuntAPI.Services
 			entry.AppliedDate = application.AppliedDate;
 			entry.ReplyDate = application.ReplyDate;
 
-			string userIdString = userId.ToString();
+	
 			// Decrypt existing files for comparison
 			var applicationPdfEntry = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 			if (applicationPdfEntry is not null)
 			{
-				var existingAppPdf = PDFEncryptionHelper.DecryptPdf(applicationPdfEntry, userIdString, _secret);
+				var existingAppPdf = PDFEncryptionHelper.DecryptPdf(applicationPdfEntry, userId, _secret);
 				// Only update if the file has changed
 				if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf!.Content, existingAppPdf.Content))
-					applicationPdfEntry = PDFEncryptionHelper.EncryptPdf(application.ApplicationPdf, userIdString, _secret);
+					applicationPdfEntry = PDFEncryptionHelper.EncryptPdf(application.ApplicationPdf, userId, _secret);
 			}
 			var entryResumePdf = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
 			if (entryResumePdf is not null)
 			{
-				var existingResumePdf = PDFEncryptionHelper.DecryptPdf(entryResumePdf, userIdString, _secret);
+				var existingResumePdf = PDFEncryptionHelper.DecryptPdf(entryResumePdf, userId, _secret);
 
 
 
 				if (PDFEncryptionHelper.IsFileChanged(application.ResumePdf!.Content, existingResumePdf.Content))
-					entryResumePdf = PDFEncryptionHelper.EncryptPdf(application.ResumePdf, userIdString, _secret);
+					entryResumePdf = PDFEncryptionHelper.EncryptPdf(application.ResumePdf, userId, _secret);
 
 			}
 			//TODO big todo to check whether the pdf is updated here

@@ -17,7 +17,7 @@ namespace JobHuntAPI.Services
 			var entry =  repository.GetItem<JobApplication>(q => q.Where(i => i.UserId == dto.UserId).Include(p => p.PdfFiles));
 			var items =  repository.GetAllItems<JobApplication>(q => q.Where(i => i.UserId == dto.UserId).Include(p => p.PdfFiles));
 			var pdf = entry.PdfFiles.Where(i => i.PdfFileId == dto.PdfId).First();
-			return PDFEncryptionHelper.DecryptPdf(pdf, dto.UserId.ToString(), _secret);
+			return PDFEncryptionHelper.DecryptPdf(pdf, dto.UserId, _secret);
 		}
 	}
 }

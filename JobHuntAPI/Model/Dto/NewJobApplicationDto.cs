@@ -4,7 +4,7 @@ namespace JobHuntAPI.Model.Dto
 {
 	public class NewJobApplicationDto
 	{
-		public required Guid UserId { get; set; }
+
 		[MinLength(3), MaxLength(100)]
 		public required string JobTitle { get; set; }
 		[MinLength(3), MaxLength(100)]

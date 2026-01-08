@@ -6,10 +6,10 @@ namespace JobHuntAPI.Services
 {
 	public class PDFEncryptionHelper
 	{
-		public static PdfFile EncryptPdf(PdfFile pdf, string userId, string secret)
+		public static PdfFile EncryptPdf(PdfFile pdf, Guid userId, string secret)
 		{
 			using var aes = Aes.Create();
-			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
+			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId.ToString() + secret));
 			aes.Key = key;
 			aes.GenerateIV();
 			using var encryptor = aes.CreateEncryptor();
@@ -22,10 +22,10 @@ namespace JobHuntAPI.Services
 			};
 			//return aes.IV.Concat(encrypted).ToArray();
 		}
-		public static PdfFile EncryptPdf(PdfFileDto pdf, string userId, string secret)
+		public static PdfFile EncryptPdf(PdfFileDto pdf, Guid userId, string secret)
 		{
 			using var aes = Aes.Create();
-			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
+			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId.ToString() + secret));
 			aes.Key = key;
 			aes.GenerateIV();
 			using var encryptor = aes.CreateEncryptor();
@@ -39,10 +39,10 @@ namespace JobHuntAPI.Services
 			//return aes.IV.Concat(encrypted).ToArray();
 		}
 
-		public static PdfFile DecryptPdf(PdfFile encryptedPdf, string userId, string secret)
+		public static PdfFile DecryptPdf(PdfFile encryptedPdf, Guid userId, string secret)
 		{
 			using var aes = Aes.Create();
-			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
+			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId.ToString() + secret));
 			aes.Key = key;
 			var iv = encryptedPdf.Content.Take(aes.BlockSize / 8).ToArray();
 			var data = encryptedPdf.Content.Skip(aes.BlockSize / 8).ToArray();
@@ -57,10 +57,10 @@ namespace JobHuntAPI.Services
 				Content = decryptor.TransformFinalBlock(data, 0, data.Length)
 			};
 		}
-		public static PdfFile DecryptPdf(PdfFileDto encryptedPdf, string userId, string secret)
+		public static PdfFile DecryptPdf(PdfFileDto encryptedPdf, Guid userId, string secret)
 		{
 			using var aes = Aes.Create();
-			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId + secret));
+			var key = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(userId.ToString() + secret));
 			aes.Key = key;
 			var iv = encryptedPdf.Content.Take(aes.BlockSize / 8).ToArray();
 			var data = encryptedPdf.Content.Skip(aes.BlockSize / 8).ToArray();
