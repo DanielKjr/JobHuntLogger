@@ -1,5 +1,5 @@
 ﻿using JobHuntApiService;
-using JobHuntLogger.Services;
+using JobHuntLogger.Services.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Web;

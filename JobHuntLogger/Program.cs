@@ -2,7 +2,7 @@ using Blazored.Modal;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using JobHuntLogger.Components;
-using JobHuntLogger.Services;
+using JobHuntLogger.Services.Authentication;
 using JobHuntLogger.Utilities;
 using JobHuntLogger.Utilities.Extensions;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;

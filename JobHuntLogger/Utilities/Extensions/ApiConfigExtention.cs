@@ -1,5 +1,5 @@
 ﻿using JobHuntApiService;
-using JobHuntLogger.Services;
+using JobHuntLogger.Services.Authentication;
 using JobHuntLogger.Services.Authorization;
 
 namespace JobHuntLogger.Utilities.Extensions

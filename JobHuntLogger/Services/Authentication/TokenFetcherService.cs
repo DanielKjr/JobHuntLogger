@@ -2,7 +2,7 @@
 using Microsoft.Identity.Web;
 using System.Net.Http.Headers;
 
-namespace JobHuntLogger.Services
+namespace JobHuntLogger.Services.Authentication
 {
 	public class TokenFetcherService(ITokenAcquisition tokentAcquisition, IHttpClientFactory httpClientFactory,
 		IConfiguration configuration, JobHuntApiClient jobHuntApiClient)

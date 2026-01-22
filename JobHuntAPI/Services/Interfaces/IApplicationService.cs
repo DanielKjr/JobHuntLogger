@@ -1,7 +1,4 @@
-﻿using JobHuntAPI.Model;
-using JobHuntAPI.Model.Dto;
-using JobHuntAPI.Model.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using JobHuntAPI.Model.Dto;
 
 namespace JobHuntAPI.Services.Interfaces
 {

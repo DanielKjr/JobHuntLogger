@@ -1,11 +1,10 @@
-﻿using JobHuntAPI.Model.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobHuntAPI.Model
 {
 	[Table("Applications")]
-	public class JobApplication : IJobApplication
+	public class JobApplication 
 	{
 
 		[Key]

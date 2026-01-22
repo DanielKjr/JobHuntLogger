@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace JobHuntLogger.Services
+namespace JobHuntLogger.Services.Authentication
 {
 	public interface IAuthenticationService
 	{

@@ -50,7 +50,7 @@ namespace JobHuntAPI.Migrations
 
                     b.HasKey("JobApplicationId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("JobHuntAPI.Model.PdfFile", b =>
@@ -82,7 +82,7 @@ namespace JobHuntAPI.Migrations
 
                     b.HasIndex("JobApplicationId");
 
-                    b.ToTable("PdfFiles");
+                    b.ToTable("PdfFiles", (string)null);
                 });
 
             modelBuilder.Entity("JobHuntAPI.Model.PdfFile", b =>

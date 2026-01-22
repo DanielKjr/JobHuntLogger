@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
-namespace JobHuntLogger.Services
+namespace JobHuntLogger.Services.Authentication
 {
 	public class AuthenticationService(AuthenticationStateProvider _authenticationStateProvider) : IAuthenticationService
 	{

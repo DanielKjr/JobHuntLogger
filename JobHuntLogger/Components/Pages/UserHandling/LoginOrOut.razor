@@ -1,7 +1,6 @@
-﻿@using JobHuntLogger.Services
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
-@inject TokenFetcherService JobHuntApiService
+@inject TokenFetcherService TokenFetcherService
 @inject IToastService toastService
 @inherits JsModuleLoader
 
@@ -43,7 +42,7 @@
 
 	private async Task CopyTokenToClipboard()
 	{
-		var token = await JobHuntApiService.GetToken();
+		var token = await TokenFetcherService.GetToken();
 		if (JsModules is not null)
 		{
 			bool success = await JsModules[(int)ModuleType.ClipBoardModule].InvokeAsync<bool>("copyTextToClipboard", token);
