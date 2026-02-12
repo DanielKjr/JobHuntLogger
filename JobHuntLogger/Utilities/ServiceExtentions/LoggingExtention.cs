@@ -11,6 +11,7 @@
 				builder.AddConsole();
 				builder.AddDebug();
 				builder.AddConfiguration(configuration.GetSection("Logging"));
+				
 			});
 			return services;
 		}

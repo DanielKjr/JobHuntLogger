@@ -26,6 +26,18 @@ namespace JobHuntAPI.Model
 
 		public ICollection<PdfFile> PdfFiles { get; set; } = new List<PdfFile>();
 
+		public JobApplication()
+		{
+			
+		}
 
+		public JobApplication(Guid userId, string jobtitle, string company, DateTime appliedDate, DateTime deadline)
+		{
+			UserId = userId;
+			JobTitle = jobtitle;
+			Company = company;
+			AppliedDate = appliedDate;
+			Deadline = deadline;
+		}
 	}
 }

@@ -32,7 +32,7 @@ namespace JobHuntAPI.Utility
 
 	public static class HttpContextLoggerExtensions
 	{
-		// Accept IHttpContextAccessor so the caller can pass the DI-resolved accessor
+		
 		public static LoggerConfiguration WithHttpContextEnricher(this LoggerEnrichmentConfiguration loggerEnrichmentConfiguration, IHttpContextAccessor httpContextAccessor)
 		{
 			return loggerEnrichmentConfiguration.With(new HttpContextEnricher(httpContextAccessor));

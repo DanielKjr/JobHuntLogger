@@ -8,7 +8,7 @@ namespace JobHuntLogger.Services.Authentication
 		IConfiguration configuration, JobHuntApiClient jobHuntApiClient)
 	{
 
-
+		//debug method used to test bearer token earlier
 		public async Task<HttpResponseMessage> CallApi()
 		{
 			var scopes = configuration["Entra:Blazor:Scopes"]?.Split(' ') ?? Array.Empty<string>();

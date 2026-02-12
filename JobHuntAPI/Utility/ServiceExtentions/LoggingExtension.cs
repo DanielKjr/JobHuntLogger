@@ -1,4 +1,4 @@
-﻿namespace JobHuntAPI.Utility
+﻿namespace JobHuntAPI.Utility.ServiceExtentions
 {
 	public static class LoggingExtension
 	{
@@ -12,6 +12,7 @@
 				builder.AddConfiguration(configuration.GetSection("Logging"));
 				
 			});
+
 			return services;
 		}
 	}

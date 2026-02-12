@@ -4,14 +4,13 @@ using JobHuntAPI.Model.Dto;
 using JobHuntAPI.Repository;
 using JobHuntAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace JobHuntAPI.Services
 {
-	public class ApplicationService(IAsyncRepository<ApplicationContext> _applicationContext, IConfiguration _configuration) : IApplicationService
+	public class ApplicationService(IAsyncRepository<ApplicationContext> _applicationRepo, IConfiguration _configuration) : IApplicationService
 	{
 		private readonly string _secret = _configuration["ApiConfig:Secret"] ?? throw new ArgumentNullException("Secret not found in configuration");
-		private Dictionary<string, object> _cache = new();
+		//private Dictionary<string, object> _cache = new();
 
 
 		public async Task AddNewAsync(Guid userId, NewJobApplicationDto dto)
@@ -24,42 +23,28 @@ namespace JobHuntAPI.Services
 			application.PdfType = PdfType.Application;
 			var resume = dto.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret) : null!;
 			resume.PdfType = PdfType.Resume;
-			JobApplication newApplication = new JobApplication()
-			{
-				UserId = userId,
-				JobTitle = dto.JobTitle,
-				Company = dto.Company,
-				AppliedDate = dto.Date,
-				Deadline = dto.Deadline
-				//EncryptedResumePdf = PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret)
-			};
+
+			JobApplication newApplication = new JobApplication(userId, dto.JobTitle, dto.Company, dto.Date, dto.Deadline);
 			if (application is not null)
 				newApplication.PdfFiles.Add(application);
 			if (resume is not null)
 				newApplication.PdfFiles.Add(resume);
 
-			await _applicationContext.AddItem(newApplication);
+			await _applicationRepo.AddItem(newApplication);
 		}
 
 		public async Task AddNewAsync(Guid userId,IEnumerable<NewJobApplicationDto> dtos)
 		{
 			
 			List<JobApplication> newApplications = new List<JobApplication>();
-			foreach (var item in dtos)
+			foreach (NewJobApplicationDto dto in dtos)
 			{
-				var application = item.ApplicationPdf is not null
-	? PDFEncryptionHelper.EncryptPdf(item.ApplicationPdf, userId, _secret)
+				var application = dto.ApplicationPdf is not null
+	? PDFEncryptionHelper.EncryptPdf(dto.ApplicationPdf, userId, _secret)
 	: null!;
-				var resume = item.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(item.ResumePdf, userId, _secret) : null!;
-				JobApplication newApplication = new JobApplication()
-				{
-					UserId = userId,
-					JobTitle = item.JobTitle,
-					Company = item.Company,
-					AppliedDate = item.Date,
-					Deadline = item.Deadline
-				};
-
+				var resume = dto.ResumePdf is not null ? PDFEncryptionHelper.EncryptPdf(dto.ResumePdf, userId, _secret) : null!;
+				JobApplication newApplication = new JobApplication(userId, dto.JobTitle, dto.Company, dto.Date, dto.Deadline);
+		
 				if (application is not null)
 					newApplication.PdfFiles.Add(application);
 				if (resume is not null)
@@ -67,17 +52,17 @@ namespace JobHuntAPI.Services
 
 				newApplications.Add(newApplication);
 			}
-			await _applicationContext.AddItems(newApplications);
+			await _applicationRepo.AddItems(newApplications);
 		}
 
 		public async Task DeleteByIdAsync(Guid userId, Guid applicationId)
 		{
-			await _applicationContext.RemoveItem<JobApplication>(q => q.UserId == userId && q.JobApplicationId == applicationId);
+			await _applicationRepo.RemoveItem<JobApplication>(q => q.UserId == userId && q.JobApplicationId == applicationId);
 		}
 
 		public async Task DeleteByIdAsync(Guid userId, IEnumerable<Guid> ids)
 		{
-			await _applicationContext.RemoveItems<JobApplication>(q => q.Where(i => i.UserId == userId && ids.Contains(i.JobApplicationId)));
+			await _applicationRepo.RemoveItems<JobApplication>(q => q.Where(i => i.UserId == userId && ids.Contains(i.JobApplicationId)));
 		}
 
 		//public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
@@ -113,17 +98,17 @@ namespace JobHuntAPI.Services
 		//With temporary cache
 		public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
 		{
-			string cacheKey = $"apps:{userId}";
+			//string cacheKey = $"apps:{userId}";
 
-			if (_cache.TryGetValue(cacheKey, out var cached))
-			{
+			//if (_cache.TryGetValue(cacheKey, out var cached))
+			//{
 
-				return (IEnumerable<T>)cached;
-			}
+			//	return (IEnumerable<T>)cached;
+			//}
 
 			var results = new List<T>();
 
-			var apps = await _applicationContext
+			var apps = await _applicationRepo
 				.GetAllItems<JobApplication>(
 					q => q.Where(i => i.UserId == userId)
 						  .Include(p => p.PdfFiles));
@@ -153,7 +138,7 @@ namespace JobHuntAPI.Services
 				results.Add(dto);
 			}
 
-			_cache[cacheKey] = results;
+			//_cache[cacheKey] = results;
 
 
 			return results;
@@ -162,7 +147,7 @@ namespace JobHuntAPI.Services
 		public async Task<JobApplicationDisplayDto> GetDisplayDtoById(Guid userId, Guid applicationId) 
 		{
 
-			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == applicationId).Include(p => p.PdfFiles));
+			var entry = await _applicationRepo.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == applicationId).Include(p => p.PdfFiles));
 			var application = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 
 			var resume = entry.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
@@ -181,7 +166,7 @@ namespace JobHuntAPI.Services
 
 		public async Task UpdateApplicationAsync<T>(Guid userId, T application) where T : JobApplicationDisplayDto
 		{
-			var entry = await _applicationContext.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == application.JobApplicationId));
+			var entry = await _applicationRepo.GetItem<JobApplication>(q => q.Where(i => i.UserId == userId && i.JobApplicationId == application.JobApplicationId));
 			if (entry == null)
 				throw new KeyNotFoundException("Application not found");
 			entry.JobTitle = application.JobTitle;
@@ -190,12 +175,11 @@ namespace JobHuntAPI.Services
 			entry.ReplyDate = application.ReplyDate;
 
 	
-			// Decrypt existing files for comparison
 			var applicationPdfEntry = entry.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
 			if (applicationPdfEntry is not null)
 			{
 				var existingAppPdf = PDFEncryptionHelper.DecryptPdf(applicationPdfEntry, userId, _secret);
-				// Only update if the file has changed
+	
 				if (PDFEncryptionHelper.IsFileChanged(application.ApplicationPdf!.Content, existingAppPdf.Content))
 					applicationPdfEntry = PDFEncryptionHelper.EncryptPdf(application.ApplicationPdf, userId, _secret);
 			}
@@ -210,14 +194,14 @@ namespace JobHuntAPI.Services
 					entryResumePdf = PDFEncryptionHelper.EncryptPdf(application.ResumePdf, userId, _secret);
 
 			}
-			//TODO big todo to check whether the pdf is updated here
 
-			await _applicationContext.UpdateItem(entry);
+
+			await _applicationRepo.UpdateItem(entry);
 		}
 
 		public async Task UpdateApplicationAsync<T>(Guid userId, IEnumerable<T> application) where T : JobApplicationDisplayDto
 		{
-			//for now just use other implementation, could be optimized later
+			//temporary
 			foreach (var app in application)
 			{
 				await UpdateApplicationAsync(userId, app);

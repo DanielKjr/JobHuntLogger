@@ -20,7 +20,6 @@ namespace JobHuntAPI.Services
 				ContentType = pdf.ContentType,
 				Content = aes.IV.Concat(encrypted).ToArray()
 			};
-			//return aes.IV.Concat(encrypted).ToArray();
 		}
 		public static PdfFile EncryptPdf(PdfFileDto pdf, Guid userId, string secret)
 		{
@@ -36,7 +35,6 @@ namespace JobHuntAPI.Services
 				ContentType = pdf.ContentType,
 				Content = aes.IV.Concat(encrypted).ToArray()
 			};
-			//return aes.IV.Concat(encrypted).ToArray();
 		}
 
 		public static PdfFile DecryptPdf(PdfFile encryptedPdf, Guid userId, string secret)

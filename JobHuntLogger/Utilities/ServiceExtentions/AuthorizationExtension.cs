@@ -6,7 +6,7 @@ namespace JobHuntLogger.Utilities.Extensions
 {
 	public static class AuthorizationExtension
 	{
-		public static IServiceCollection RegisterAuthorization(this IServiceCollection services, IConfiguration configuration)
+		public static IServiceCollection RegisterAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 				.AddMicrosoftIdentityWebApp(configuration.GetSection("Entra:Blazor"))

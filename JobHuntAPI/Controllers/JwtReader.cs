@@ -5,6 +5,7 @@ namespace JobHuntAPI.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
+	[Tags("Debug tool to check token content")]
 	public class JwtReader : Controller
 	{
 		[HttpPost("/jwt")]

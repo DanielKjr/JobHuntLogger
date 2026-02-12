@@ -6,7 +6,7 @@
 @inject JobHuntApiClient JobHuntApiClient
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject ILogger<AddOrEditApplication> Logger
-
+@inject NavigationManager NavigationManager
 
 
 
@@ -61,7 +61,6 @@
 			<div class="form-group">
 				<label for="resume">Resume</label>
 				<UploadFile Dto="existingDto?.ResumePdf" Title="Upload Resume" OnFileUploaded="OnResumeUpload" OnFileRemoved="DeleteResume" />
-				<!-- If UploadFile forwards id/aria attributes, prefer passing id="resume" and aria-describedby="resume-validation" -->
 				<ValidationMessage For="@(() => appDto.ResumePdf)" />
 			</div>
 
@@ -75,7 +74,7 @@
 
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">Save application</button>
-			<button type="button" class="btn btn-secondary">Cancel</button>
+			<button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
 		</div>
 	</div>
 </EditForm>
@@ -90,6 +89,7 @@
 	public Guid? ApplicationId { get; set; }
 
 	[CascadingParameter] public IAuthenticationService? CascadedAuthenticationService { get; set; }
+
 
 
 	//TODO properly display the existing file if it exists
@@ -176,18 +176,25 @@
 			if (existingDto != null)
 			{
 				await JobHuntApiClient.UpdateAsync(existingDto);
+				NavigationManager.NavigateTo("/");
 			}
 			else
 			{
 				await JobHuntApiClient.NewAsync(appDto);
-
+				NavigationManager.NavigateTo("/");
 			}
 		}
 		catch (Exception e)
 		{
 
 			Logger.LogError("Error submitting new application: {Error}", e.Message);
+		
 		}
+	}
+
+	private async Task OnCancel()
+	{
+		NavigationManager.NavigateTo("/applications");
 	}
 
 	private void OnInvalidSubmit(EditContext context)
