@@ -10,8 +10,6 @@ namespace JobHuntAPI.Repository
 		private readonly IConfiguration _configuration;
 		public DbSet<JobApplication> JobApplications { get; set; } = null!;
 		public DbSet<PdfFile> PdfFiles { get; set; } = null!;
-
-		//TODO fiks det at der er jobapplicaitonId og jobapplicationId1 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration)
 			: base(options)
 		{
@@ -59,16 +57,6 @@ namespace JobHuntAPI.Repository
 			}
 			modelBuilder.Entity<PdfFile>().Property(e => e.PdfType).HasConversion(v => v.ToString(), v => (PdfType)Enum.Parse(typeof(PdfType), v));
 
-			//modelBuilder.Entity<JobApplication>()
-			//	.HasOne(a => a.EncryptedApplicationPdf)
-			//	.WithOne()
-			//	.HasForeignKey<PdfFile>(p => p.JobApplicationId)
-			//	.OnDelete(DeleteBehavior.Cascade);
-			//modelBuilder.Entity<JobApplication>()
-			//	.HasOne(a => a.EncryptedResumePdf)
-			//	.WithOne()
-			//	.HasForeignKey<PdfFile>(p => p.JobApplicationId)
-			//	.OnDelete(DeleteBehavior.Cascade);
 		}
 
 	}

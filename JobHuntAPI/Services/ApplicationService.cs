@@ -65,37 +65,7 @@ namespace JobHuntAPI.Services
 			await _applicationRepo.RemoveItems<JobApplication>(q => q.Where(i => i.UserId == userId && ids.Contains(i.JobApplicationId)));
 		}
 
-		//public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
-		//{
-		//	List<T> results = new List<T>();
-		//	var applications = await _applicationContext.GetAllItems<JobApplication>(q => q.Where(i => i.UserId == userId).Include(p => p.PdfFiles));
-		//	foreach (var app in applications)
-		//	{
-		//		T dto = Activator.CreateInstance<T>();
 
-		//		dto.JobApplicationId = app.JobApplicationId;
-		//		dto.JobTitle = app.JobTitle;
-		//		dto.Company = app.Company;
-		//		dto.AppliedDate = app.AppliedDate;
-		//		dto.ReplyDate = app.ReplyDate;
-		//		var application = app.PdfFiles.Where(i => i.PdfType == PdfType.Application).FirstOrDefault();
-
-		//		if (application is not null)
-		//			dto.ApplicationPdf = PDFEncryptionHelper.DecryptPdf(application, userId.ToString(), _secret);
-		//		else
-		//			dto.ApplicationPdf = null;
-
-		//		var resume = app.PdfFiles.Where(i => i.PdfType == PdfType.Resume).FirstOrDefault();
-		//		if (resume is not null)
-		//			dto.ResumePdf = PDFEncryptionHelper.DecryptPdf(resume, userId.ToString(), _secret);
-		//		else
-		//			dto.ResumePdf = null;
-		//		results.Add(dto);
-		//	}
-		//	return results;
-		//}
-
-		//With temporary cache
 		public async Task<IEnumerable<T>> GetAllAsync<T>(Guid userId) where T : JobApplicationDisplayDto
 		{
 			//string cacheKey = $"apps:{userId}";
@@ -108,12 +78,12 @@ namespace JobHuntAPI.Services
 
 			var results = new List<T>();
 
-			var apps = await _applicationRepo
+			var applications = await _applicationRepo
 				.GetAllItems<JobApplication>(
 					q => q.Where(i => i.UserId == userId)
 						  .Include(p => p.PdfFiles));
 
-			foreach (var app in apps)
+			foreach (var app in applications)
 			{
 				T dto = Activator.CreateInstance<T>();
 
@@ -143,7 +113,7 @@ namespace JobHuntAPI.Services
 
 			return results;
 		}
-		//Experimental using the new() functionality
+	
 		public async Task<JobApplicationDisplayDto> GetDisplayDtoById(Guid userId, Guid applicationId) 
 		{
 
