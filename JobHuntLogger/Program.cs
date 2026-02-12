@@ -29,6 +29,7 @@ builder.Services.AddHttpClient();
 
 
 builder.Host.AddSerilogEnricher();
+builder.Services.AddLoggingConfiguration(builder.Configuration);
 builder.Services.AddApiConfiguration(builder.Configuration);
 builder.Services.RegisterTokenCache(builder.Configuration);
 builder.Services.RegisterAuthenticationAndAuthorization(builder.Configuration);
