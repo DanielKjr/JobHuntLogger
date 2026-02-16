@@ -41,6 +41,15 @@ namespace JobHuntLogger.Utilities.Extensions
 			services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 			{
 				options.UseTokenLifetime = false;
+				//Prompt user to select account
+				options.Events = new OpenIdConnectEvents
+				{
+					OnRedirectToIdentityProvider = context =>
+					{
+						context.ProtocolMessage.Prompt = "select_account";
+						return Task.CompletedTask;
+					}
+				};
 
 			});
 			services.AddAuthorization();
