@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 
-namespace JobHuntLogger.Utilities.Extensions
+namespace JobHuntLogger.Utilities.ServiceExtentions
 {
 	public static class AuthorizationExtension
 	{
@@ -41,14 +41,17 @@ namespace JobHuntLogger.Utilities.Extensions
 			services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 			{
 				options.UseTokenLifetime = false;
-				//Prompt user to select account
-				options.Events = new OpenIdConnectEvents
+				//Prompt user to select account but not overriding AddMicrosoftIdentityWebApp's event 
+				var existingHandler = options.Events.OnRedirectToIdentityProvider;
+
+				options.Events.OnRedirectToIdentityProvider = async context =>
 				{
-					OnRedirectToIdentityProvider = context =>
+					if (existingHandler != null)
 					{
-						context.ProtocolMessage.Prompt = "select_account";
-						return Task.CompletedTask;
+						await existingHandler(context);
 					}
+
+					context.ProtocolMessage.Prompt = "select_account";
 				};
 
 			});

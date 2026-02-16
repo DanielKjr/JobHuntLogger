@@ -1,4 +1,4 @@
-﻿namespace JobHuntLogger.Utilities.Extensions
+﻿namespace JobHuntLogger.Utilities.ServiceExtentions
 {
 	public static class LoggingExtention
 	{

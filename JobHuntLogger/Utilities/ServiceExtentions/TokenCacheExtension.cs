@@ -1,6 +1,6 @@
 ﻿using JobHuntLogger.Services.HostedServices;
 
-namespace JobHuntLogger.Utilities.Extensions
+namespace JobHuntLogger.Utilities.ServiceExtentions
 {
 	public static class TokenCacheExtension
 	{

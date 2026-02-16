@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using Serilog.Core;
 
-namespace JobHuntLogger.Utilities.Extensions
+namespace JobHuntLogger.Utilities.ServiceExtentions
 {
 	public static class SerilogExtention
 	{

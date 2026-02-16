@@ -2,7 +2,7 @@
 using JobHuntLogger.Services.Authentication;
 using JobHuntLogger.Services.Authorization;
 
-namespace JobHuntLogger.Utilities.Extensions
+namespace JobHuntLogger.Utilities.ServiceExtentions
 {
 	public static class ApiConfigExtention
 	{
