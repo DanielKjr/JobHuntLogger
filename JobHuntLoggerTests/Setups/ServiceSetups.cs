@@ -47,6 +47,7 @@ namespace JobHuntLoggerTests.Setups
 
 			Services.AddSingleton<AuthenticationStateProvider>(authenticationStateProviderMock.Object);
 			Services.AddSingleton<IAuthenticationService>(authenticationService);
+
 		}
 
 		public static void RegisterAuthorizedSetup(IServiceCollection Services)
