@@ -13,6 +13,7 @@ namespace JobHuntLogger.Components.Shared
 		protected string[] Modules = ["browserInterop", "clipboardModule", "fileInputInteropModule", "pdfModule"];
 		protected Dictionary<int, IJSObjectReference>? JsModules = new Dictionary<int, IJSObjectReference>();
 		private ModuleType[] loadedModules = [];
+		public ModuleType[] LoadedModules => loadedModules;
 		protected void SetModules(params ModuleType[] _loadedModules) => this.loadedModules = _loadedModules;
 
 		[Inject] IJSRuntime JS { get; set; }

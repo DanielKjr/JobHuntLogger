@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Security.Claims;
 using JobHuntApiService;
 using JobHuntLogger.Services.Authentication;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +11,11 @@ namespace JobHuntLoggerTests.Setups
 
 	public static class ServiceSetups
 	{
+		public static void SetAuthorized(this BunitContext context)
+		{
+			context.AddAuthorization().SetAuthorized("NameOfUser").SetClaims(new Claim("name", "NameOfUser"), new Claim(ClaimTypes.Name, "Guest"));
 
+		}
 		public static void RegisterJobHuntApi(IServiceCollection Services)
 		{
 			var tokenAcquisitionMock = new Mock<ITokenAcquisition>();
@@ -24,6 +29,7 @@ namespace JobHuntLoggerTests.Setups
 				configurationMock.Object,
 				apiClientMock.Object
 			);
+
 			Services.AddSingleton<TokenFetcherService>(jobHuntApiService);
 
 			Services.AddSingleton<IAuthenticationService, AuthenticationService>();

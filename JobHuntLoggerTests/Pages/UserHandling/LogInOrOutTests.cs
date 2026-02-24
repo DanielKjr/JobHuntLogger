@@ -1,12 +1,22 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using AngleSharp.Dom;
 using Blazored.Toast.Services;
+using JobHuntApiService;
 using JobHuntLogger.Components.Pages.UserHandling;
+using JobHuntLogger.Components.Shared;
+using JobHuntLogger.Services.Authentication;
 using JobHuntLoggerTests.Setups;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Web;
+using Moq;
 
-namespace JobHuntLoggerTests
+namespace JobHuntLoggerTests.Pages.UserHandling
 {
 	[TestFixture]
 	[FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
@@ -37,8 +47,7 @@ namespace JobHuntLoggerTests
 		[Test]
 		public void UserActionAuthorizedRendersLogOut()
 		{
-
-			AddAuthorization().SetAuthorized("NameOfUser").SetClaims(new Claim("name", "NameOfUser"), new Claim(ClaimTypes.Name, "Guest"));
+			ServiceSetups.SetAuthorized(this);
 			ServiceSetups.RegisterJobHuntApi(Services);
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			Services.AddSingleton<IToastService, ToastService>();
@@ -93,6 +102,51 @@ namespace JobHuntLoggerTests
 
 		}
 
+		[Test]
+		public void ClickOnUserNameCopiesID()
+		{
+			//TODO need to simplify this. This is a niche case where i need to test
+			//the fetched token and have to verify it, but its not pretty
+			ServiceSetups.SetAuthorized(this);
+			var expectedGuid = Guid.NewGuid().ToString();
+			var tokenAcquisitionMock = new Mock<ITokenAcquisition>();
+			tokenAcquisitionMock.Setup(t => t.GetAccessTokenForUserAsync(
+				It.IsAny<IEnumerable<string>>(), It.IsAny<string>(),
+				It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(),
+				It.IsAny<TokenAcquisitionOptions>())).ReturnsAsync(expectedGuid);
+
+			var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+			var configurationMock = new Mock<IConfiguration>();
+			var apiClientMock = new Mock<JobHuntApiClient>("http://dummy", new HttpClient());
+			var jobHuntApiService = new TokenFetcherService(
+				tokenAcquisitionMock.Object,
+				httpClientFactoryMock.Object,
+				configurationMock.Object,
+				apiClientMock.Object
+			);
+			Services.AddSingleton<TokenFetcherService>(jobHuntApiService);
+			Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+			Services.AddSingleton<IToastService, ToastService>();
+
+			var clipboard = JSInterop.SetupModule("./js/clipboardModule.js");
+			clipboard.Setup<bool>("copyTextToClipboard", args => true)
+				.SetResult(true);
+
+			var cut = Render<CascadingAuthenticationState>(parameters => parameters
+				.AddChildContent<LoginOrOut>()
+			);
+
+			cut.Find("div.name").Click();
+
+			cut.WaitForAssertion(() =>
+			{
+				var invocation = clipboard.Invocations
+					.Single(i => i.Identifier == "copyTextToClipboard");
+
+				Assert.AreEqual(expectedGuid, invocation.Arguments[0]);
+			});
+
+		}
 
 	}
 }

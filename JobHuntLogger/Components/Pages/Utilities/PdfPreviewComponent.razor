@@ -41,12 +41,8 @@ else
 	{
 		await base.OnAfterRenderAsync(firstRender);
 
-		if (firstRender)
-		{
-			//First render skips the rest to ensure the iframe is correctly craeted
-			StateHasChanged();
+		if (!firstRender)
 			return;
-		}
 
 		if (JsModules is null)
 			return;
@@ -54,28 +50,24 @@ else
 		if (PdfFile?.Content == null || !IsValidPdf(PdfFile.Content))
 		{
 			loadError = true;
+			return;
+		}
+
+		string browser = await JsModules[(int)ModuleType.BrowserInterop]
+			.InvokeAsync<string>("getBrowserInfo");
+
+		if (string.Equals(browser, "firefox", StringComparison.OrdinalIgnoreCase))
+		{
+			errorMessage = $"Unable to display pdf in the active browser. ({browser})";
+			loadError = true;
 			StateHasChanged();
 			return;
 		}
 
-		loadError = false;
-		// Set iframe src via JS module
-		if (!loaded)
-		{
-			loaded = true;
-			string browser = await JsModules[(int)ModuleType.BrowserInterop].InvokeAsync<string>("getBrowserInfo");
-			if (string.Equals(browser, "firefox", StringComparison.OrdinalIgnoreCase))
-			{
-				errorMessage = $"Unable to display pdf in the active browser.  ({browser})";
-				loadError = true;
-				StateHasChanged();
-			}
-			else
-			{
-				await JsModules[(int)ModuleType.PdfModule].InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
-			}
-		
-		}
+		await JsModules[(int)ModuleType.PdfModule]
+			.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
+
+		loaded = true;
 	}
 
 	private bool IsValidPdf(byte[] data)
