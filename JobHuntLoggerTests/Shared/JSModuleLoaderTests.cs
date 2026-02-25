@@ -26,9 +26,9 @@ namespace JobHuntLoggerTests.Shared
 		[Test]
 		public void ClipboardModule_Is_Loaded()
 		{
-			ServiceSetups.SetAuthorized(this);
+			this.SetAuthorized();
 			Services.AddSingleton<IToastService, ToastService>();
-			ServiceSetups.RegisterJobHuntApi(Services);
+			Services.RegisterJobHuntApi();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			var cut = Render<CascadingAuthenticationState>(parameters => parameters
 			.AddChildContent<LoginOrOut>()
@@ -43,7 +43,7 @@ namespace JobHuntLoggerTests.Shared
 		[Test]
 		public void ModuleLoaderLoadsMultipleModules()
 		{
-			ServiceSetups.RegisterJobHuntApi(Services);
+			Services.RegisterJobHuntApi();
 			var apiClientMock = new Mock<JobHuntApiClient>("http://dummy", new HttpClient());
 
 			JSInterop.SetupModule("./js/browserInterop.js");

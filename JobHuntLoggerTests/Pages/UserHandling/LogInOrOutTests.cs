@@ -28,7 +28,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		public void UserActionUnAuthorizedRendersLogIn()
 		{
 
-			ServiceSetups.RegisterJobHuntApi(Services);
+			Services.RegisterJobHuntApi();
 			var auth = AddAuthorization();
 		
 			Services.AddSingleton<IToastService, ToastService>();
@@ -47,8 +47,8 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		[Test]
 		public void UserActionAuthorizedRendersLogOut()
 		{
-			ServiceSetups.SetAuthorized(this);
-			ServiceSetups.RegisterJobHuntApi(Services);
+			this.SetAuthorized();
+			Services.RegisterJobHuntApi();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			Services.AddSingleton<IToastService, ToastService>();
 
@@ -67,7 +67,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		[Test]
 		public void UserActionLoginButtonNavigatesToMicrosoft()
 		{
-			ServiceSetups.RegisterJobHuntApi(Services);
+			Services.RegisterJobHuntApi();
 			var auth = AddAuthorization();
 			
 			JSInterop.SetupModule("./js/clipboardModule.js");
@@ -89,7 +89,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		[Test]
 		public void UserActionsDisplayAuthorizing()
 		{
-			ServiceSetups.RegisterJobHuntApi(Services);
+			Services.RegisterJobHuntApi();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			AddAuthorization().SetAuthorizing();
 			Services.AddSingleton<IToastService, ToastService>();
@@ -107,7 +107,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		{
 			//TODO need to simplify this. This is a niche case where i need to test
 			//the fetched token and have to verify it, but its not pretty
-			ServiceSetups.SetAuthorized(this);
+			this.SetAuthorized();
 			var expectedGuid = Guid.NewGuid().ToString();
 			var tokenAcquisitionMock = new Mock<ITokenAcquisition>();
 			tokenAcquisitionMock.Setup(t => t.GetAccessTokenForUserAsync(

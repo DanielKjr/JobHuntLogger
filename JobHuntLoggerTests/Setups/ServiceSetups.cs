@@ -11,12 +11,12 @@ namespace JobHuntLoggerTests.Setups
 
 	public static class ServiceSetups
 	{
-		public static void SetAuthorized(this BunitContext context)
+		public static BunitAuthorizationContext SetAuthorized(this BunitContext context)
 		{
-			context.AddAuthorization().SetAuthorized("NameOfUser").SetClaims(new Claim("name", "NameOfUser"), new Claim(ClaimTypes.Name, "Guest"));
+			return context.AddAuthorization().SetAuthorized("NameOfUser").SetClaims(new Claim("name", "NameOfUser"), new Claim(ClaimTypes.Name, "Guest"));
 
 		}
-		public static void RegisterJobHuntApi(IServiceCollection Services)
+		public static IServiceCollection RegisterJobHuntApi(this IServiceCollection services)
 		{
 			var tokenAcquisitionMock = new Mock<ITokenAcquisition>();
 			var httpClientFactoryMock = new Mock<IHttpClientFactory>();
@@ -30,9 +30,10 @@ namespace JobHuntLoggerTests.Setups
 				apiClientMock.Object
 			);
 
-			Services.AddSingleton<TokenFetcherService>(jobHuntApiService);
+			services.AddSingleton<TokenFetcherService>(jobHuntApiService);
 
-			Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+			services.AddSingleton<IAuthenticationService, AuthenticationService>();
+			return services;
 		}
 
 

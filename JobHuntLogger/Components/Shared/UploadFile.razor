@@ -67,7 +67,6 @@
 		if(Dto != null)
 		{
 			uploadedFileName = Dto.FileName;
-			// await OnFileUploaded.InvokeAsync((Dto.FileName, Dto.ContentType, Dto.Content));
 		}
 	}
 	private IDictionary<string, object> GetInputAttributes()
@@ -132,8 +131,7 @@
 
 		if (JsModules is not null)
 		{
-			await JsModules[(int)ModuleType.FileInputInterop].InvokeVoidAsync("clearFileInput", inputId);
-
+			await InvokeJsModuleAsync<object>(ModuleType.FileInputInterop, "clearFileInput", inputId);
 			await OnFileRemoved.InvokeAsync();
 			StateHasChanged();
 

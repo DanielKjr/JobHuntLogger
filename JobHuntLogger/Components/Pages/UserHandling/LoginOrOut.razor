@@ -45,8 +45,7 @@
 		var token = await TokenFetcherService.GetToken();
 		if (JsModules is not null)
 		{
-			bool success = await JsModules[(int)ModuleType.ClipBoardModule].InvokeAsync<bool>("copyTextToClipboard", token);
-
+			bool success = await InvokeJsModuleAsync<bool>(ModuleType.ClipBoardModule, "copyTextToClipboard", token);
 			if (success)
 				toastService.ShowSuccess("Token copied to clipboard!");
 			else

@@ -31,5 +31,12 @@ namespace JobHuntLogger.Components.Shared
 
 			}
 		}
+
+		public ValueTask<T> InvokeJsModuleAsync<T>(ModuleType module, string functionName, params object[] args)
+		{
+			if (JsModules == null || !JsModules.ContainsKey((int)module))
+				throw new InvalidOperationException($"Module {module} has not been loaded.");
+			return JsModules[(int)module].InvokeAsync<T>(functionName, args);
+		}
 	}
 }

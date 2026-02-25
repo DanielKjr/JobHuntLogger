@@ -53,8 +53,8 @@ else
 			return;
 		}
 
-		string browser = await JsModules[(int)ModuleType.BrowserInterop]
-			.InvokeAsync<string>("getBrowserInfo");
+
+		var browser = await InvokeJsModuleAsync<string>(ModuleType.BrowserInterop, "getBrowserInfo");
 
 		if (string.Equals(browser, "firefox", StringComparison.OrdinalIgnoreCase))
 		{
@@ -64,9 +64,8 @@ else
 			return;
 		}
 
-		await JsModules[(int)ModuleType.PdfModule]
-			.InvokeVoidAsync("setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
-
+	
+		await InvokeJsModuleAsync<object>(ModuleType.PdfModule, "setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
 		loaded = true;
 	}
 
