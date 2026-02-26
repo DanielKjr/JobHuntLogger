@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Security.Claims;
-using System.Text;
 using Blazored.Toast.Services;
 using JobHuntApiService;
-using JobHuntLogger.Components.Pages.UserHandling;
-using JobHuntLogger.Components.Pages.Utilities;
 using JobHuntLogger.Components.Shared;
-using JobHuntLogger.Services.Authentication;
+using System.Reflection;
 using JobHuntLoggerTests.Setups;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Web;
 using Moq;
+using Microsoft.JSInterop;
+using System.Threading.Tasks;
 
 namespace JobHuntLoggerTests.Shared
 {
@@ -23,25 +16,28 @@ namespace JobHuntLoggerTests.Shared
 	internal class JSModuleLoaderTests : BunitContext
 	{
 
-		[Test]
-		public void ClipboardModule_Is_Loaded()
+        [Test]
+        public async Task ClipboardModule_Is_Loaded()
 		{
 			this.SetAuthorized();
 			Services.AddSingleton<IToastService, ToastService>();
 			Services.RegisterJobHuntApi();
 			JSInterop.SetupModule("./js/clipboardModule.js");
-			var cut = Render<CascadingAuthenticationState>(parameters => parameters
-			.AddChildContent<LoginOrOut>()
-		);
-			
+            // Use the concrete service instance with the test IJSRuntime
+            var jsRuntime = Services.GetRequiredService<IJSRuntime>();
+            var loader = new JSModuleLoader(jsRuntime);
+            await loader.RegisterAsync(ModuleType.ClipBoardModule);
 
-			var loader = cut.FindComponent<JsModuleLoader>();
-
-			Assert.AreEqual(ModuleType.ClipBoardModule, loader.Instance.LoadedModules.Single());
+            // Inspect private _modules dictionary to assert the module was loaded
+            var modulesField = typeof(JSModuleLoader).GetField("_modules", BindingFlags.NonPublic | BindingFlags.Instance);
+            var modules = (Dictionary<int, IJSObjectReference>?)modulesField.GetValue(loader);
+            Assert.IsNotNull(modules);
+            Assert.AreEqual(1, modules!.Count);
+            Assert.IsTrue(modules.ContainsKey((int)ModuleType.ClipBoardModule));
 		}
 
-		[Test]
-		public void ModuleLoaderLoadsMultipleModules()
+        [Test]
+        public async Task ModuleLoaderLoadsMultipleModules()
 		{
 			Services.RegisterJobHuntApi();
 			var apiClientMock = new Mock<JobHuntApiClient>("http://dummy", new HttpClient());
@@ -50,13 +46,16 @@ namespace JobHuntLoggerTests.Shared
 			JSInterop.SetupModule("./js/pdfModule.js");
 
 			Services.AddSingleton<JobHuntApiClient>(apiClientMock.Object);
-			var cut = Render<PdfPreviewComponent>();
+            var jsRuntime = Services.GetRequiredService<IJSRuntime>();
+            var loader = new JSModuleLoader(jsRuntime);
+            await loader.RegisterAsync(ModuleType.PdfModule, ModuleType.BrowserInterop);
 
-			var loadedModules = cut.Instance.LoadedModules;
-			Assert.IsNotNull(loadedModules);
-			Assert.AreEqual(2, loadedModules.Length);
-			Assert.Contains(ModuleType.PdfModule, loadedModules);
-			Assert.Contains(ModuleType.BrowserInterop, loadedModules);
+            var modulesField = typeof(JSModuleLoader).GetField("_modules", BindingFlags.NonPublic | BindingFlags.Instance);
+            var modules = (Dictionary<int, IJSObjectReference>?)modulesField.GetValue(loader);
+            Assert.IsNotNull(modules);
+            Assert.AreEqual(2, modules!.Count);
+            Assert.IsTrue(modules.ContainsKey((int)ModuleType.PdfModule));
+            Assert.IsTrue(modules.ContainsKey((int)ModuleType.BrowserInterop));
 		}
 
 

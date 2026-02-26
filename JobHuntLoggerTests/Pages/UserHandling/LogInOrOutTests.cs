@@ -30,7 +30,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 
 			Services.RegisterJobHuntApi();
 			var auth = AddAuthorization();
-		
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 			Services.AddSingleton<IToastService, ToastService>();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 
@@ -45,10 +45,32 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		}
 
 		[Test]
+		public void UserActionLogoutButtonNavigatesToMicrosoft()
+		{
+			this.SetAuthorized();
+			Services.RegisterJobHuntApi();
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
+			JSInterop.SetupModule("./js/clipboardModule.js");
+			Services.AddSingleton<IToastService, ToastService>();
+			var cut = Render<CascadingAuthenticationState>(parameters => parameters
+				.AddChildContent<LoginOrOut>()
+			);
+
+			NavigationManager? navigationManager = Services.GetRequiredService<NavigationManager>() as NavigationManager;
+			IElement logoutButton = cut.Find("button.b1");
+			Assert.AreEqual("Logout", logoutButton.TextContent);
+			logoutButton.Click();
+			string url = navigationManager!.Uri;
+			Assert.AreEqual("http://localhost/Account/LogOut", url);
+
+		}
+
+		[Test]
 		public void UserActionAuthorizedRendersLogOut()
 		{
 			this.SetAuthorized();
 			Services.RegisterJobHuntApi();
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			Services.AddSingleton<IToastService, ToastService>();
 
@@ -69,7 +91,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		{
 			Services.RegisterJobHuntApi();
 			var auth = AddAuthorization();
-			
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			Services.AddSingleton<IToastService, ToastService>();
 			IRenderedComponent<CascadingAuthenticationState>? cut = Render<CascadingAuthenticationState>(parameters => parameters
@@ -90,6 +112,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 		public void UserActionsDisplayAuthorizing()
 		{
 			Services.RegisterJobHuntApi();
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 			JSInterop.SetupModule("./js/clipboardModule.js");
 			AddAuthorization().SetAuthorizing();
 			Services.AddSingleton<IToastService, ToastService>();
@@ -127,7 +150,7 @@ namespace JobHuntLoggerTests.Pages.UserHandling
 			Services.AddSingleton<TokenFetcherService>(jobHuntApiService);
 			Services.AddSingleton<IAuthenticationService, AuthenticationService>();
 			Services.AddSingleton<IToastService, ToastService>();
-
+			Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 			var clipboard = JSInterop.SetupModule("./js/clipboardModule.js");
 			clipboard.Setup<bool>("copyTextToClipboard", args => true)
 				.SetResult(true);

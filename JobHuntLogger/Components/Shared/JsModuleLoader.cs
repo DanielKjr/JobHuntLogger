@@ -1,42 +1,56 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace JobHuntLogger.Components.Shared
 {
-	/// <summary>
-	/// Not as elegant as I'd prefer but it gets the job done. 
-	/// Uses ModuleType enum to match up which modules to load, allowing the child classes to access JsModules with enum index
-	/// </summary>
-	public abstract partial class JsModuleLoader : ComponentBase
-	{
-		protected string[] Modules = ["browserInterop", "clipboardModule", "fileInputInteropModule", "pdfModule"];
-		protected Dictionary<int, IJSObjectReference>? JsModules = new Dictionary<int, IJSObjectReference>();
-		private ModuleType[] loadedModules = [];
-		public ModuleType[] LoadedModules => loadedModules;
-		protected void SetModules(params ModuleType[] _loadedModules) => this.loadedModules = _loadedModules;
+    public class JSModuleLoader(IJSRuntime _jsRuntime) : IJSModuleLoader, IAsyncDisposable
+    {
+        private readonly string[] _moduleNames = new[] { "browserInterop", "clipboardModule", "fileInputInteropModule", "pdfModule" };
+        private readonly Dictionary<int, IJSObjectReference> _modules = new();
 
-		[Inject] IJSRuntime JS { get; set; }
+        public async Task RegisterAsync(params ModuleType[] modules)
+        {
+            if (modules == null || modules.Length == 0)
+                return;
 
-		protected override async Task OnAfterRenderAsync(bool firstRender)
-		{
+            foreach (var module in modules)
+            {
+                var idx = (int)module;
+                if (_modules.ContainsKey(idx))
+                    continue;
 
-			if (!firstRender)
-				return;
+                var jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", $"./js/{_moduleNames[idx]}.js");
+                _modules[idx] = jsModule;
+            }
+        }
 
-			foreach (var module in loadedModules)
-			{
-				var ijsObj = await JS.InvokeAsync<IJSObjectReference>("import", $"./js/{Modules[(int)module]}.js");
-				JsModules!.Add((int)module, ijsObj);
+        public ValueTask<T> InvokeAsync<T>(ModuleType module, string functionName, params object[] args)
+        {
+            if (!_modules.ContainsKey((int)module))
+                throw new InvalidOperationException($"Module {module} has not been registered for this instance.");
 
-			}
-		}
+            return _modules[(int)module].InvokeAsync<T>(functionName, args);
+        }
 
-		public ValueTask<T> InvokeJsModuleAsync<T>(ModuleType module, string functionName, params object[] args)
-		{
-			if (JsModules == null || !JsModules.ContainsKey((int)module))
-				throw new InvalidOperationException($"Module {module} has not been loaded.");
-			return JsModules[(int)module].InvokeAsync<T>(functionName, args);
-		}
-	}
+        public async Task ReleaseAsync()
+        {
+            foreach (var jsRef in _modules.Values)
+            {
+                try
+                {
+                    await jsRef.DisposeAsync();
+                }
+                catch
+                {
+                    // Swallow individual dispose errors to ensure best-effort cleanup
+                }
+            }
+
+            _modules.Clear();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await ReleaseAsync();
+        }
+    }
 }

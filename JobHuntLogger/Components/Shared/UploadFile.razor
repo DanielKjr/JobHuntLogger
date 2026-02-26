@@ -1,6 +1,6 @@
 ﻿@using JobHuntLogger.Components.Pages.ApplicationHandling
 @inject ILogger<UploadFile> Logger
-@inherits JsModuleLoader
+@inject IJSModuleLoader jSModuleLoader
 
 @attribute [Authorize]
 
@@ -63,11 +63,15 @@
 
 	protected override async void OnInitialized()
 	{
-		SetModules([ModuleType.FileInputInterop]);
 		if(Dto != null)
 		{
 			uploadedFileName = Dto.FileName;
 		}
+	}
+	protected override async void OnAfterRender(bool firstRender)
+	{
+		await jSModuleLoader.RegisterAsync(ModuleType.FileInputInterop);
+		base.OnAfterRender(firstRender);
 	}
 	private IDictionary<string, object> GetInputAttributes()
 	{
@@ -129,13 +133,12 @@
 	{
 		uploadedFileName = null;
 
-		if (JsModules is not null)
-		{
-			await InvokeJsModuleAsync<object>(ModuleType.FileInputInterop, "clearFileInput", inputId);
+		
+			await jSModuleLoader.InvokeAsync<object>(ModuleType.FileInputInterop, "clearFileInput", inputId);
 			await OnFileRemoved.InvokeAsync();
 			StateHasChanged();
 
-		}
+		
 
 	}
 }

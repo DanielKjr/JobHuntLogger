@@ -1,7 +1,7 @@
 ﻿@using Microsoft.JSInterop
 @using System.Threading.Tasks
 @using System.Text
-@inherits JsModuleLoader
+@inject IJSModuleLoader JSModuleLoader
 @inject JobHuntApiClient JobHuntApiClient
 
 
@@ -25,7 +25,6 @@ else
 	private string errorMessage = "Unable to display pdf.";
 	protected override Task OnParametersSetAsync()
 	{
-		SetModules(ModuleType.PdfModule, ModuleType.BrowserInterop);
 		if (PdfFile?.Content == null)
 		{
 			loadError = true;
@@ -39,13 +38,13 @@ else
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
+		await JSModuleLoader.RegisterAsync(ModuleType.PdfModule, ModuleType.BrowserInterop);
 		await base.OnAfterRenderAsync(firstRender);
 
 		if (!firstRender)
 			return;
 
-		if (JsModules is null)
-			return;
+		
 
 		if (PdfFile?.Content == null || !IsValidPdf(PdfFile.Content))
 		{
@@ -54,7 +53,7 @@ else
 		}
 
 
-		var browser = await InvokeJsModuleAsync<string>(ModuleType.BrowserInterop, "getBrowserInfo");
+		var browser = await JSModuleLoader.InvokeAsync<string>(ModuleType.BrowserInterop, "getBrowserInfo");
 
 		if (string.Equals(browser, "firefox", StringComparison.OrdinalIgnoreCase))
 		{
@@ -65,7 +64,7 @@ else
 		}
 
 	
-		await InvokeJsModuleAsync<object>(ModuleType.PdfModule, "setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
+		await JSModuleLoader.InvokeAsync<object>(ModuleType.PdfModule, "setIframeSrc", iframeRef, Convert.ToBase64String(PdfFile.Content));
 		loaded = true;
 	}
 

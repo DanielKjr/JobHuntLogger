@@ -332,62 +332,23 @@
         }
       }
     },
-    "/pdf": {
+    "/jwt": {
       "post": {
         "tags": [
-          "Pdf"
+          "Debug tool to check token content"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/PdfRequestDto"
-                  }
-                ]
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/PdfRequestDto"
-                  }
-                ]
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/PdfRequestDto"
-                  }
-                ]
-              }
+        "parameters": [
+          {
+            "name": "jwt",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PdfFile"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PdfFile"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PdfFile"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -452,14 +413,12 @@
           "jobTitle": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "company": {
             "maxLength": 100,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "applicationPdf": {
             "allOf": [
@@ -540,20 +499,6 @@
           "contentType": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "PdfRequestDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "pdfId": {
-            "type": "string",
-            "format": "uuid"
           }
         },
         "additionalProperties": false

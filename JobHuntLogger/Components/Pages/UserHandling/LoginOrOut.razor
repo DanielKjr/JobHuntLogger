@@ -2,7 +2,7 @@
 @inject IAuthenticationService AuthenticationService
 @inject TokenFetcherService TokenFetcherService
 @inject IToastService toastService
-@inherits JsModuleLoader
+@inject IJSModuleLoader JSModuleLoader
 
 <div class="login-or-out-container">
 	<AuthorizeView>
@@ -35,22 +35,25 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		SetModules(ModuleType.ClipBoardModule);
+
 		var auth = CascadedAuthenticationService ?? AuthenticationService;
 		userName = await auth.GetUserNameAsync();
 	}
-
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await JSModuleLoader.RegisterAsync(ModuleType.ClipBoardModule);
+		
+	}
 	private async Task CopyTokenToClipboard()
 	{
 		var token = await TokenFetcherService.GetToken();
-		if (JsModules is not null)
-		{
-			bool success = await InvokeJsModuleAsync<bool>(ModuleType.ClipBoardModule, "copyTextToClipboard", token);
+		
+			bool success = await JSModuleLoader.InvokeAsync<bool>(ModuleType.ClipBoardModule, "copyTextToClipboard", token);
 			if (success)
 				toastService.ShowSuccess("Token copied to clipboard!");
 			else
 				toastService.ShowError("Failed to copy token to clipboard.");
-		}
+		
 		StateHasChanged();
 		await Task.Delay(3000);
 	}

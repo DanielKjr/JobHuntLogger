@@ -4,9 +4,10 @@ namespace JobHuntAPI.Model.Dto
 {
 	public class NewJobApplicationDto
 	{
-
+		[Required]
 		[MinLength(3), MaxLength(100)]
 		public required string JobTitle { get; set; }
+		[Required]
 		[MinLength(3), MaxLength(100)]
 		public required string Company { get; set; }
 

@@ -2,6 +2,7 @@ using Blazored.Modal;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using JobHuntLogger.Components;
+using JobHuntLogger.Components.Shared;
 using JobHuntLogger.Services.Authentication;
 using JobHuntLogger.Utilities.ServiceExtentions;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
@@ -26,6 +27,8 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddHttpClient();
+
+builder.Services.AddTransient<IJSModuleLoader, JSModuleLoader>();
 
 
 builder.Host.AddSerilogEnricher();
